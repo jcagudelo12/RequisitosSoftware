@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 0001 · Registrar entrada de mercancía · Stock Central</title>
+<style>
+:root{--sidebar-bg:#1b2533;--sidebar-text:#c9d1dc;--sidebar-muted:#7d8899;--sidebar-active:#2b3a4f;--brand:#f59e0b;--bg:#f3f4f6;--surface:#ffffff;--border:#e5e7eb;--text:#111827;--muted:#6b7280;--primary:#2563eb;--primary-hover:#1d4ed8;--success:#15803d;--success-bg:#dcfce7;--warning:#b45309;--warning-bg:#fef3c7;--danger:#b91c1c;--danger-bg:#fee2e2;--info:#1d4ed8;--info-bg:#dbeafe;--radius:8px;--radius-sm:6px;--shadow:0 1px 2px rgba(16,24,40,.06);--chrome-bg:#312e81;--chrome-text:#ffffff}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:14px;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.45;color:var(--text);background:var(--bg);overflow-x:hidden}
+h1,h2,h3,h4,p,dl,dd{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--primary)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.mk-chrome :focus-visible,.sidebar :focus-visible,.toast :focus-visible{outline-color:#fff}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.ico{width:16px;height:16px;flex:none;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.muted{color:var(--muted)}.strong{font-weight:600}
+/* ---- Chrome del mockup (NO es parte del producto) ---- */
+.mk-chrome{position:fixed;top:0;left:0;right:0;height:44px;background:var(--chrome-bg);color:var(--chrome-text);display:flex;align-items:center;gap:16px;padding:0 16px;z-index:200;font-size:13px;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+.mk-chrome>*{flex:none}
+.mk-tag{font-weight:700;letter-spacing:.03em}
+.mk-chrome a{color:#fff}
+.mk-chrome label{display:flex;align-items:center;gap:6px;font-size:12px}
+.mk-chrome select{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:4px 8px;font-size:13px;max-width:230px}
+.mk-chrome select option{color:#111827;background:#fff}
+.mk-spacer{flex:1 0 0!important}
+.mk-chrome{scrollbar-width:none}.mk-chrome::-webkit-scrollbar{display:none}
+.mk-notes-btn{background:#fff;color:var(--chrome-bg);border:0;border-radius:6px;padding:5px 12px;font-weight:600;cursor:pointer}
+/* ---- Sidebar ---- */
+.sidebar{position:fixed;top:44px;left:0;bottom:0;width:232px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;z-index:60;overflow-y:auto;overflow-x:hidden;transition:transform .2s}
+.brand{display:flex;align-items:center;gap:10px;padding:18px 16px 12px;color:#fff;font-weight:700;font-size:15px;text-decoration:none}
+.brand-logo{width:30px;height:30px;border-radius:8px;background:var(--brand);color:#1b2533;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.sb-nav{flex:1;padding:6px 12px;display:flex;flex-direction:column;gap:2px}
+.sb-group{font-size:11px;letter-spacing:.08em;color:var(--sidebar-muted);padding:16px 10px 6px;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--sidebar-text);text-decoration:none;font-size:13px}
+.sb-item:hover{background:rgba(255,255,255,.06)}
+.sb-item.active{background:var(--sidebar-active);color:#fff;font-weight:600}
+.sb-item[aria-disabled=true]{cursor:not-allowed}
+.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;color:var(--sidebar-muted);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex:none;display:inline-block}
+.scrim{display:none}
+/* ---- Topbar y layout ---- */
+.main{margin-left:232px;padding-top:44px;min-width:0}
+.topbar{position:sticky;top:44px;z-index:30;height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px}
+.tb-menu.btn{display:none}
+.tb-title{min-width:0;flex:1 1 auto}
+.tb-title strong{display:block;font-size:16px;line-height:1.2}
+.tb-sub{font-size:12px;color:var(--muted)}
+.tb-search{position:relative;flex:0 1 340px;min-width:0}
+.tb-search .ico{position:absolute;left:11px;top:11px;color:var(--muted)}
+.tb-search input{width:100%;height:36px;padding:0 12px 0 34px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;font-size:13px}
+.tb-sede{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;height:36px;font-size:13px;white-space:nowrap}
+.tb-user{display:flex;gap:10px;align-items:center}
+.avatar{width:32px;height:32px;border-radius:50%;background:#e0e7ff;color:#3730a3;display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.tb-user-text strong{display:block;font-size:13px;line-height:1.2;white-space:nowrap}
+.tb-user-text span{font-size:11px;color:var(--muted);white-space:nowrap}
+.content{padding:24px;min-width:0;outline:none}
+.app.bare .sidebar,.app.bare .topbar{display:none}
+.app.bare .main{margin-left:0}
+.page-head{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.crumb{font-size:12px;color:var(--muted)}
+.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{text-decoration:underline}
+.h1{font-size:22px;font-weight:700;line-height:1.25}
+.page-sub{color:var(--muted);font-size:13px}
+.title-row{display:flex;gap:12px;align-items:center;margin-top:6px}
+/* ---- Botones ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:var(--radius-sm);border:1px solid transparent;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;background:#fff;color:var(--text)}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:#fff;border-color:#d1d5db}.btn-secondary:hover{background:#f9fafb}
+.btn-ghost{background:transparent;color:var(--muted)}.btn-ghost:hover{background:#e5e7eb;color:var(--text)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#991b1b}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{background:#166534}
+.btn-sm{height:30px;padding:0 10px;font-size:12px}
+.btn-icon{width:36px;padding:0}.btn-sm.btn-icon{width:30px}
+.btn[disabled],.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.link-btn{background:none;border:0;padding:0;color:inherit;font-weight:600;cursor:pointer;text-align:left}
+.link-btn:hover{color:var(--primary);text-decoration:underline}
+/* ---- Card, KPI ---- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;flex-wrap:wrap}
+.card-head-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.card-body{padding:20px}
+.card-title{font-size:15px;font-weight:700}
+.card-sub{font-size:12px;color:var(--muted)}
+.overline{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:16px 20px;min-width:0}
+.kpi-label{font-size:12px;color:var(--muted)}
+.kpi-value{font-size:28px;font-weight:700;line-height:1.2;margin:4px 0 2px}
+.kpi-value.is-danger{color:var(--danger)}.kpi-value.is-warning{color:var(--warning)}
+.kpi-note{font-size:12px;color:var(--muted)}
+.kpi-note.is-success{color:var(--success)}.kpi-note.is-danger{color:var(--danger)}.kpi-note.is-warning{color:var(--warning)}
+/* ---- Tabla ---- */
+.table-wrap{overflow-x:auto;max-width:100%;position:relative}
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{background:#f9fafb;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);border-top:1px solid var(--border);white-space:nowrap}
+.table td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table .num{text-align:right;font-variant-numeric:tabular-nums}
+.table tbody tr:last-child td{border-bottom:0}
+.table tr.is-link{cursor:pointer}.table tr.is-link:hover{background:#f9fafb}
+/* ---- Badge ---- */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap;line-height:1.5}
+.badge-success{background:var(--success-bg);color:var(--success)}
+.badge-warning{background:var(--warning-bg);color:var(--warning)}
+.badge-danger{background:var(--danger-bg);color:var(--danger)}
+.badge-info{background:var(--info-bg);color:var(--info)}
+.badge-neutral{background:#e5e7eb;color:#374151}
+/* ---- Formularios ---- */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label,.label{font-size:12px;font-weight:600;color:#374151}
+.req{color:var(--danger)}.opt{font-weight:400;color:var(--muted)}
+.input{width:100%;height:36px;padding:0 12px;border:1px solid #d1d5db;border-radius:var(--radius-sm);background:#fff;font-size:13px;min-width:0}
+textarea.input{height:auto;padding:8px 12px;min-height:90px;resize:vertical}
+.input:disabled,.input[readonly]{background:#f3f4f6;color:var(--muted);cursor:not-allowed}
+.input.is-error{border-color:var(--danger);background:#fff5f5;box-shadow:0 0 0 1px var(--danger)}
+.field-help{font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.field-error{font-size:12px;color:var(--danger);margin-top:4px}
+.form-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid #d1d5db;border-radius:var(--radius-sm);overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;padding:0 12px;height:34px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--info-bg);color:var(--info)}
+.kv{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 16px}
+.kv dt{color:var(--muted);font-size:12.5px}.kv dd{font-weight:600}
+/* ---- Modal, drawer ---- */
+.overlay{position:fixed;inset:44px 0 0 0;background:rgba(17,24,39,.55);z-index:150;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.25);width:100%;max-width:520px;max-height:100%;overflow:auto}
+.modal-head{padding:20px 24px 0}
+.modal-title{font-size:17px;font-weight:700}
+.modal-body{padding:12px 24px 4px;color:#374151}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px 20px;flex-wrap:wrap}
+.overlay-right{justify-content:flex-end;align-items:stretch;padding:0}
+.drawer{background:#fff;width:460px;max-width:100%;height:100%;box-shadow:-10px 0 30px rgba(0,0,0,.2);overflow:auto;display:flex;flex-direction:column}
+.drawer-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:20px 24px;border-bottom:1px solid var(--border)}
+.drawer-body{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+/* ---- Toast ---- */
+.toasts{position:fixed;right:16px;bottom:16px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:calc(100vw - 32px)}
+.toast{background:#111827;color:#fff;border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 10px 25px rgba(0,0,0,.25);font-size:13px;min-width:260px;max-width:440px;border-left:4px solid #60a5fa}
+.toast-success{border-left-color:#22c55e}.toast-warning{border-left-color:#f59e0b}
+.toast-msg{flex:1}
+.toast-link,.toast-x{background:none;border:0;cursor:pointer;color:#93c5fd;font-weight:600;padding:0}
+.toast-x{color:#d1d5db;font-size:16px;line-height:1}
+/* ---- Estados ---- */
+.empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:40px 20px;color:var(--muted)}
+.empty-state .es-icon{width:48px;height:48px;border-radius:50%;background:#f3f4f6;display:grid;place-items:center;color:var(--muted)}
+.empty-state .es-icon .ico{width:24px;height:24px}
+.empty-state h2,.empty-state h3{color:var(--text);font-size:16px;font-weight:700}
+.empty-state p{max-width:440px}
+.empty-state .btn{margin-top:8px}
+.skeleton{display:block;border-radius:6px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
+.sk-line{height:12px;margin:6px 0}.sk-big{height:30px;width:60%;margin:10px 0}
+@keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.spinner{width:18px;height:18px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.skeleton{animation:none}.sidebar,.notes{transition:none}}
+.alert-banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius);border:1px solid;font-size:13px;margin-bottom:16px}
+.alert-banner .ico{margin-top:2px}
+.alert-body{flex:1;min-width:0}
+.alert-actions{margin-left:auto;display:flex;gap:8px;flex:none}
+.alert-info{background:var(--info-bg);color:var(--info);border-color:#bfdbfe}
+.alert-warning{background:var(--warning-bg);color:var(--warning);border-color:#fde68a}
+.alert-danger{background:var(--danger-bg);color:var(--danger);border-color:#fecaca}
+/* ---- Panel de notas del mockup ---- */
+.notes{position:fixed;top:44px;right:0;bottom:0;width:min(460px,100vw);background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 24px rgba(0,0,0,.14);z-index:180;transform:translateX(100%);visibility:hidden;transition:transform .2s,visibility .2s;overflow-y:auto;font-size:13px}
+.notes.open{transform:none;visibility:visible}
+.notes-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1}
+.notes-head h2{font-size:15px}
+.notes-body{padding:4px 16px 24px}
+.notes-body section{padding:14px 0;border-bottom:1px solid var(--border)}
+.notes-body h3{font-size:13.5px;margin-bottom:8px;color:var(--chrome-bg)}
+.notes-body ul{margin:6px 0 0;padding-left:18px}.notes-body li{margin:3px 0}
+.notes-body table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.notes-body th,.notes-body td{border:1px solid var(--border);padding:5px 7px;text-align:left;vertical-align:top}
+.notes-body th{background:#f9fafb}
+.notes-body td.grp{background:#eef2ff;font-weight:700;color:var(--chrome-bg)}
+.notes-body .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.notes-body .node{background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600}
+.notes-body .arrow{color:var(--muted)}
+.notes-body .tag{display:inline-block;background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 6px;font-weight:700;font-size:11.5px}
+/* ---- Responsive ---- */
+@media (max-width:1023px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:768px) and (max-width:1279px){
+ .sidebar{width:64px}
+ .brand-text,.sb-label,.sb-foot-text{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+ .sb-group{font-size:0;padding:0;height:1px;margin:10px 8px;background:rgba(255,255,255,.12)}
+ .sb-item{justify-content:center;padding:10px}
+ .brand{justify-content:center;padding:18px 0 12px}
+ .sb-foot{justify-content:center}
+ .main{margin-left:64px}
+ .form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:767px){
+ .mk-long{display:none}
+ .mk-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+ .mk-chrome{gap:10px;padding:0 10px}
+ .mk-chrome select{max-width:84px;font-size:12px;padding:3px 4px}
+ .sidebar{transform:translateX(-100%);box-shadow:none}
+ .nav-open .sidebar{transform:none;box-shadow:6px 0 24px rgba(0,0,0,.35)}
+ .nav-open .scrim{display:block;position:fixed;inset:44px 0 0 0;background:rgba(17,24,39,.5);z-index:55}
+ .main{margin-left:0}
+ .tb-menu.btn{display:inline-flex}
+ .topbar{padding:0 12px;gap:10px}
+ .tb-search,.tb-user-text,.tb-sede{display:none}
+ .content{padding:16px 12px}
+ .kpis{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+ .kv{grid-template-columns:1fr;gap:2px 0}.kv dd{margin-bottom:8px}
+ .h1{font-size:19px}
+ .mk-tag{max-width:none}
+ .modal-foot .btn{flex:1}
+ .alert-banner{flex-wrap:wrap}.alert-actions{margin-left:0}
+}
+
+.btn-icon.btn-ghost{color:var(--muted)}
+.search-wrap{position:relative;width:320px;max-width:100%}
+.search-wrap>.ico{position:absolute;left:10px;top:10px;color:var(--muted)}
+.search-wrap .input{padding-left:32px}
+.head-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.dropdown{position:absolute;top:42px;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 10px 25px rgba(0,0,0,.18);z-index:20;padding:14px;font-size:13px}
+.dropdown p+p{margin-top:6px}
+.t-form{min-width:1020px}
+.t-form td{vertical-align:top;padding-top:14px;padding-bottom:14px}
+.t-form td:not(.cell-in){padding-top:22px}
+.t-form td.cell-in{min-width:140px}
+.detail-foot{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px 24px}
+.totals{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.total{font-size:22px;font-weight:700}
+.card.has-error{border-color:#fca5a5;box-shadow:0 0 0 1px #fca5a5}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;padding:0 20px 16px}
+.toolbar .input{width:auto;min-width:170px}
+.t-list{min-width:880px}
+.center-card{max-width:560px;margin:32px auto;text-align:center;padding:32px 28px}
+.center-card .big-ico{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px}
+.center-card .big-ico .ico{width:28px;height:28px}
+.big-ico.ok{background:var(--success-bg);color:var(--success)}
+.big-ico.bad{background:var(--danger-bg);color:var(--danger)}
+.big-ico.warn{background:var(--warning-bg);color:var(--warning)}
+.center-card h1{font-size:20px;margin-bottom:8px}
+.center-card .kv{text-align:left;margin:18px 0 4px;padding:16px;background:#f9fafb;border-radius:var(--radius)}
+.center-card .actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.bare-wrap{min-height:calc(100vh - 44px);display:grid;place-items:center;padding:16px}
+.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.sum div{background:#f9fafb;border-radius:var(--radius);padding:10px 12px}
+.sum span{display:block;font-size:11.5px;color:var(--muted)}.sum strong{font-size:14px}
+@media (max-width:767px){.sum{grid-template-columns:1fr 1fr}.search-wrap{width:100%}.head-tools{width:100%}}
+.kv-4{grid-template-columns:150px minmax(0,1fr) 150px minmax(0,1fr)}
+@media (max-width:1023px){.kv-4{grid-template-columns:150px minmax(0,1fr)}}
+@media (max-width:767px){.kv-4{grid-template-columns:1fr}}
+.t-list td:first-child a{white-space:nowrap;text-decoration:none;color:var(--primary)}.t-list td:nth-child(2){white-space:nowrap}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="i-sq" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 6.3M20 4v7h-7"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6H3v-6zM3 13h5l1 3h6l1-3h5"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7zM15 3v4h4"/></symbol>
+</svg>
+
+<header class="mk-chrome" aria-label="Controles del mockup (no forman parte del producto)">
+  <span class="mk-tag"><span class="mk-long">MOCKUP </span>0001<span class="mk-long"> · Registrar entrada de mercancía</span></span>
+  <a href="../03-specs/0001-registrar-entrada-mercancia.md">Ver spec</a>
+  <span class="mk-spacer"></span>
+  <label><span class="mk-lbl">Pantalla</span> <select id="selScreen"></select></label>
+  <label><span class="mk-lbl">Estado</span> <select id="selState"></select></label>
+  <button type="button" class="mk-notes-btn" id="notesBtn" aria-expanded="false" aria-controls="notes" aria-label="Notas del mockup">Notas<span class="mk-long"> del mockup</span></button>
+</header>
+
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="Menú principal">
+    <a class="brand" href="0004-dashboard-stock-consolidado.html" aria-label="Stock Central, ir al dashboard"><span class="brand-logo" aria-hidden="true">SI</span><span class="brand-text">Stock Central</span></a>
+    <nav class="sb-nav" aria-label="Módulos">
+      <a class="sb-item" href="0004-dashboard-stock-consolidado.html" title="Dashboard"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Dashboard</span></a>
+      <div class="sb-group">INVENTARIO</div>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Productos</span></a>
+      <a class="sb-item active" aria-current="page" href="0001-registrar-entrada-mercancia.html" title="Entradas"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Entradas</span></a>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Salidas y ajustes</span></a>
+      <a class="sb-item" href="0002-trasladar-mercancia-entre-sedes.html" title="Traslados"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Traslados</span></a>
+      <a class="sb-item" href="0003-toma-fisica-conciliacion.html" title="Toma física"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Toma física</span></a>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Kardex</span></a>
+      <div class="sb-group">GESTIÓN</div>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Compras</span></a>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Reportes PDF</span></a>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Sedes y usuarios</span></a>
+      <a class="sb-item" href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sq"/></svg><span class="sb-label">Auditoría</span></a>
+    </nav>
+    <div class="sb-foot"><span class="dot" aria-hidden="true"></span><span class="sb-foot-text">IP 190.85.42.17 · Sede autorizada</span></div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="btn btn-secondary btn-icon tb-menu" id="navBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <div class="tb-title"><strong id="tbTitle"></strong><span class="tb-sub" id="tbSub"></span></div>
+      <div class="tb-search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Buscar producto por código o nombre…" aria-label="Buscar producto por código o nombre"></div>
+      <div class="tb-sede" title="Sede activa"><span class="dot" aria-hidden="true"></span><span id="tbSede"></span></div>
+      <div class="tb-user"><span class="avatar" id="tbAv" aria-hidden="true"></span><span class="tb-user-text"><strong id="tbName"></strong><span id="tbRole"></span></span></div>
+    </header>
+    <main class="content" id="view" tabindex="-1"></main>
+  </div>
+</div>
+
+<aside class="notes" id="notes" aria-labelledby="notesTitle">
+  <div class="notes-head"><h2 id="notesTitle">Notas del mockup 0001</h2><button type="button" class="btn btn-secondary btn-sm" id="notesClose">Cerrar</button></div>
+  <div class="notes-body" id="notesBody"></div>
+</aside>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+
+<script>
+/* Motor del mockup: SOLO cambia de pantalla/estado. Sin lógica de negocio. */
+(function(){
+'use strict';
+var C;
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var flow=false,timer=null,params={},lastScreen=null;
+window.ic=function(n,c){return '<svg class="ico '+(c||'')+'" aria-hidden="true" focusable="false"><use href="#i-'+n+'"/></svg>'};
+window.crumb=function(items){return '<nav class="crumb" aria-label="Ruta de navegación">'+items.map(function(x,i){var last=i===items.length-1;if(typeof x==='string')return last?'<span aria-current="page">'+x+'</span>':'<span>'+x+'</span>';return '<a href="'+(x[2]||'#')+'"'+(x[1]?' data-go="'+x[1]+'"':'')+'>'+x[0]+'</a>'}).join(' / ')+'</nav>'};
+window.modal=function(o){return '<div class="overlay'+(o.right?' overlay-right':'')+'"'+(o.esc?' data-esc="'+o.esc+'"':'')+'><div class="'+(o.right?'drawer':'modal')+'" role="dialog" aria-modal="true" aria-labelledby="'+o.id+'-t" tabindex="-1"'+(o.noDesc?'':' aria-describedby="'+o.id+'-d"')+'>'+o.inner+'</div></div>'};
+window.withOverlay=function(bg,ov){return '<div inert aria-hidden="true">'+bg+'</div>'+ov};
+window.statesTable=function(){
+  var h='<table><thead><tr><th>Estado</th><th>Cuándo ocurre</th><th>Cómo verlo</th></tr></thead><tbody>';
+  Object.keys(C.screens).forEach(function(k){var sc=C.screens[k];
+    h+='<tr><td class="grp" colspan="3">Pantalla «'+sc.label+'»</td></tr>';
+    sc.states.forEach(function(st){h+='<tr><td>'+st[1]+'</td><td>'+(st[2]||'')+'</td><td><a href="#pantalla='+k+'&estado='+st[0]+'">#pantalla='+k+'&amp;estado='+st[0]+'</a></td></tr>'});
+  });
+  return h+'</tbody></table>';
+};
+function parse(){
+  var p=new URLSearchParams(location.hash.replace(/^#/,''));
+  var s=p.get('pantalla');if(!C.screens[s])s=C.start;
+  var st=C.screens[s].states,e=p.get('estado');
+  if(!st.some(function(x){return x[0]===e}))e=st[0][0];
+  params={};p.forEach(function(v,k){if(k!=='pantalla'&&k!=='estado')params[k]=v});
+  return {s:s,e:e};
+}
+window.go=function(t,o){
+  var i=t.indexOf('&'),extra=i<0?'':t.slice(i),main=i<0?t:t.slice(0,i),a=main.split(':'),s=a[0],e=a[1];
+  if(!C.screens[s])return;
+  if(!e)e=C.screens[s].states[0][0];
+  var h='#pantalla='+s+'&estado='+e+extra;
+  flow=!!(o&&o.flow);
+  if(location.hash===h)render();else location.hash=h;
+};
+window.toast=function(msg,o){
+  o=o||{};var box=$('#toasts'),d=document.createElement('div');
+  d.className='toast toast-'+(o.type||'info');
+  d.innerHTML=ic(o.type==='success'?'check':'info')+'<div class="toast-msg"></div>'+(o.action?'<button type="button" class="toast-link" data-toast="'+o.action.toast+'">'+o.action.label+'</button>':'')+'<button type="button" class="toast-x" aria-label="Cerrar notificación">&times;</button>';
+  $('.toast-msg',d).textContent=msg;
+  box.appendChild(d);
+  while(box.children.length>3)box.removeChild(box.firstChild);
+  setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},7000);
+};
+function setNotes(open){
+  $('#notes').classList.toggle('open',open);
+  $('#notesBtn').setAttribute('aria-expanded',open?'true':'false');
+  if(open)$('#notesClose').focus();else if(document.activeElement&&$('#notes').contains(document.activeElement))$('#notesBtn').focus();
+}
+function setNav(open){
+  $('#app').classList.toggle('nav-open',open);
+  $('#navBtn').setAttribute('aria-expanded',open?'true':'false');
+}
+function render(){
+  var wasFlow=flow;flow=false;clearTimeout(timer);
+  var r=parse(),s=r.s,e=r.e,sc=C.screens[s],out=sc.render(e,params,s)||{};
+  var app=$('#app');app.classList.toggle('bare',!!out.bare);setNav(false);
+  $('#view').innerHTML=out.html||'';
+  var u=out.user||C.user;
+  $('#tbTitle').textContent=out.title||C.title;$('#tbSub').textContent=out.sub||'';
+  $('#tbSede').textContent=out.sede||C.sede;
+  $('#tbAv').textContent=u.ini;$('#tbName').textContent=u.name;$('#tbRole').textContent=u.role;
+  var stLabel='';
+  sc.states.forEach(function(x){if(x[0]===e)stLabel=x[1]});
+  $('#selScreen').value=s;
+  $('#selState').innerHTML=sc.states.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');
+  $('#selState').value=e;
+  document.title='Mockup '+C.num+' · '+sc.label+' · '+stLabel;
+  var ov=$('#view .overlay'),dlg=ov&&$('[role="dialog"]',ov);
+  $$('.sidebar,.topbar').forEach(function(x){if(ov)x.setAttribute('inert','');else x.removeAttribute('inert')});
+  if(dlg){var f=$('[data-autofocus]',dlg)||$('button:not([disabled]),a[href],input:not([disabled]),textarea,select',dlg)||dlg;f.focus()}
+  else if(wasFlow){var h=$('#view h1');if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}}
+  if(wasFlow||lastScreen!==s)window.scrollTo(0,0);
+  lastScreen=s;
+  $('#live').textContent='Pantalla '+sc.label+', estado '+stLabel;
+  if(out.after)out.after();
+  var au=sc.auto&&sc.auto(e);
+  if(au&&wasFlow)timer=setTimeout(function(){go(au.to,{flow:true})},au.ms);
+}
+document.addEventListener('click',function(ev){
+  var t=ev.target;
+  var dis=t.closest('[aria-disabled="true"]');
+  if(dis){ev.preventDefault();toast(dis.getAttribute('title')||'Fuera del alcance de este mockup');return}
+  if(t.closest('.toast-x')){var d=t.closest('.toast');d.parentNode.removeChild(d);return}
+  if(t.closest('.sb-item'))setNav(false);
+  if(t.closest('#notes a[href^="#"]'))setNotes(false);
+  var ovl=t.closest('.overlay[data-esc]');if(ovl&&t===ovl){go(ovl.getAttribute('data-esc'),{flow:true});return}
+  var el=t.closest('[data-toast],[data-go],[data-act]');if(!el)return;
+  if(el.tagName==='TR'&&t.closest('input,select,textarea'))return;
+  ev.preventDefault();
+  if(el.hasAttribute('data-toast'))toast(el.getAttribute('data-toast'),{type:el.getAttribute('data-toast-type')||'info'});
+  if(el.hasAttribute('data-act')&&C.actions)C.actions[el.getAttribute('data-act')](el);
+  else if(el.hasAttribute('data-go'))go(el.getAttribute('data-go'),{flow:true});
+});
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Escape'){
+    if($('#notes').classList.contains('open')){setNotes(false);return}
+    if($('#app').classList.contains('nav-open')){setNav(false);return}
+    var ov=$('#view .overlay[data-esc]');if(ov)go(ov.getAttribute('data-esc'),{flow:true});
+  }else if(ev.key==='Tab'){
+    var o=$('#view .overlay');if(!o)return;
+    var f=$$('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex="0"]',o);
+    if(!f.length){ev.preventDefault();return}
+    var first=f[0],last=f[f.length-1],a=document.activeElement;
+    if(!o.contains(a)){ev.preventDefault();first.focus()}
+    else if(ev.shiftKey&&a===first){ev.preventDefault();last.focus()}
+    else if(!ev.shiftKey&&a===last){ev.preventDefault();first.focus()}
+  }
+});
+window.initMock=function(cfg){
+  C=window.MOCK=cfg;
+  $('#selScreen').innerHTML=Object.keys(C.screens).map(function(k){return '<option value="'+k+'">'+C.screens[k].label+'</option>'}).join('');
+  $('#selScreen').addEventListener('change',function(){location.hash='#pantalla='+this.value+'&estado='+C.screens[this.value].states[0][0]});
+  $('#selState').addEventListener('change',function(){location.hash='#pantalla='+$('#selScreen').value+'&estado='+this.value});
+  $('#notesBtn').addEventListener('click',function(){setNotes(!$('#notes').classList.contains('open'))});
+  $('#notesClose').addEventListener('click',function(){setNotes(false)});
+  $('#navBtn').addEventListener('click',function(){setNav(!$('#app').classList.contains('nav-open'))});
+  $('#scrim').addEventListener('click',function(){setNav(false)});
+  $('#notesBody').innerHTML=typeof C.notes==='function'?C.notes():C.notes;
+  window.addEventListener('hashchange',render);
+  render();
+};
+})();
+
+/* ===== Mockup 0001 · Registrar entrada de mercancía ===== */
+(function(){
+var U={ini:'LM',name:'Laura Méndez',role:'Bodeguera · Sede Laureles'};
+var ADMIN={ini:'DM',name:'Diana Montoya',role:'Administrador general'};
+var ID='ENT-LAU-000482';
+var P1={code:'P-00311',name:'Aceite vegetal 3 L',stock:2,qty:24,cost:'28.500',sub:'$684.000',cpp:'$27.831'};
+var P2={code:'P-00124',name:'Arroz Premium 1 kg',stock:51,qty:60,cost:'4.200',sub:'$252.000',cpp:'$4.185'};
+var P3={code:'P-01077',name:'Detergente líquido 2 L',stock:3,qty:0,cost:'15.600',sub:'—',cpp:'—'};
+var P4={code:'P-02210',name:'Café molido 500 g',stock:30,qty:12,cost:'18.600',sub:'$223.200',cpp:'$18.043'};
+var ENT=[
+ ['ENT-LAU-000481','05/11/2026 16:20','Distribuidora Andina S.A.S.','FV-88190',6,'$2.384.500','Confirmada','Laura Méndez','detalle:normal'],
+ ['ENT-LAU-000480','04/11/2026 09:05','Lácteos del Valle Ltda.','RM-20457',3,'$842.300','Confirmada','Laura Méndez','detalle:normal'],
+ ['ENT-LAU-000479','03/11/2026 14:48','Aseo Total S.A.S.','FV-5521',5,'$1.126.000','Anulada','Laura Méndez','detalle:anulada'],
+ ['ENT-LAU-000478','31/10/2026 11:30','Distribuidora Andina S.A.S.','FV-87944',8,'$3.210.750','Confirmada','Carlos Ríos','detalle:normal'],
+ ['ENT-LAU-000477','29/10/2026 17:12','Café Andino S.A.','FV-1023',2,'$558.000','Confirmada','Laura Méndez','detalle:normal'],
+ ['ENT-LAU-000476','28/10/2026 10:02','Aseo Total S.A.S.','RM-77120',4,'$697.400','Borrador','Laura Méndez','formulario:normal']
+];
+var BADGE={Confirmada:'success',Anulada:'neutral',Borrador:'info'};
+
+function pageHead(crumbs,title,sub,actions){
+  return '<div class="page-head"><div>'+crumb(crumbs)+'<h1 class="h1" style="margin-top:6px">'+title+'</h1>'+(sub?'<p class="page-sub">'+sub+'</p>':'')+'</div>'+(actions?'<div class="head-tools">'+actions+'</div>':'')+'</div>';
+}
+function banner(type,html,actions,id){
+  return '<div class="alert-banner alert-'+type+'" role="alert"'+(id?' id="'+id+'"':'')+'>'+ic(type==='info'?'info':'alert')+'<div class="alert-body">'+html+'</div>'+(actions?'<div class="alert-actions">'+actions+'</div>':'')+'</div>';
+}
+function emptyState(icon,title,text,cta,h){
+  return '<div class="empty-state"><span class="es-icon">'+ic(icon)+'</span><'+(h||'h2')+'>'+title+'</'+(h||'h2')+'><p>'+text+'</p>'+(cta||'')+'</div>';
+}
+
+/* ---------- 1. Lista ---------- */
+function lista(e){
+  var head=pageHead(['Inventario','Entradas'],'Entradas de mercancía','Sede Laureles · Compras recibidas de proveedores y su estado.','<button type="button" class="btn btn-primary" data-go="formulario:normal">'+ic('plus')+' Nueva entrada</button>');
+  var th='<thead><tr><th>N.°</th><th>Fecha</th><th>Proveedor</th><th>Factura / remisión</th><th class="num">Productos</th><th class="num">Total</th><th>Estado</th><th>Registró</th></tr></thead>';
+  var body;
+  if(e==='carga'){
+    var rows='';for(var i=0;i<6;i++){rows+='<tr>'+'<td><span class="skeleton sk-line" style="width:110px"></span></td>'.repeat(1)+'<td><span class="skeleton sk-line" style="width:100px"></span></td><td><span class="skeleton sk-line" style="width:170px"></span></td><td><span class="skeleton sk-line" style="width:80px"></span></td><td><span class="skeleton sk-line" style="width:30px;margin-left:auto"></span></td><td><span class="skeleton sk-line" style="width:80px;margin-left:auto"></span></td><td><span class="skeleton sk-line" style="width:70px"></span></td><td><span class="skeleton sk-line" style="width:90px"></span></td></tr>'}
+    body='<div class="card" aria-busy="true"><div class="card-head"><span class="card-sub" role="status">Cargando entradas…</span></div><div class="table-wrap"><table class="table t-list">'+th+'<tbody>'+rows+'</tbody></table></div></div>';
+  }else if(e==='vacio'){
+    body='<div class="card">'+emptyState('inbox','Aún no hay entradas en esta sede','Cuando registres la primera compra recibida, aparecerá aquí con su consecutivo ENT-LAU-n.°.','<button type="button" class="btn btn-primary" data-go="formulario:vacio">'+ic('plus')+' Nueva entrada</button>')+'</div>';
+  }else if(e==='error'){
+    body=banner('danger','<strong>No pudimos cargar las entradas</strong><br>Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, avisa al administrador.','<button type="button" class="btn btn-secondary btn-sm" data-go="lista:carga">'+ic('refresh')+' Reintentar</button>');
+  }else{
+    var r=ENT.map(function(x){return '<tr class="is-link" data-go="'+x[8]+'"><td><a href="#" data-go="'+x[8]+'" class="strong">'+x[0]+'</a></td><td>'+x[1]+'</td><td>'+x[2]+'</td><td>'+x[3]+'</td><td class="num">'+x[4]+'</td><td class="num strong">'+x[5]+'</td><td><span class="badge badge-'+BADGE[x[6]]+'">'+x[6]+'</span></td><td>'+x[7]+'</td></tr>'}).join('');
+    body='<div class="card"><div class="card-head"><div class="toolbar" style="padding:0"><select class="input" aria-label="Filtrar por estado"><option>Estado: Todos</option></select><select class="input" aria-label="Filtrar por fecha"><option>Últimos 30 días</option></select><select class="input" aria-label="Filtrar por proveedor"><option>Proveedor: Todos</option></select></div><span class="card-sub">Mostrando 6 de 6 entradas</span></div><div class="table-wrap"><table class="table t-list">'+th+'<tbody>'+r+'</tbody></table></div></div>';
+  }
+  return {html:head+body,title:'Inventario',sub:'Entradas de mercancía'};
+}
+
+/* ---------- 2. Formulario ---------- */
+function prodRow(n,p,o){
+  o=o||{};var d=o.disabled?' disabled':'',q='r'+n+'q',c='r'+n+'c';
+  return '<tr><td class="muted">'+n+'</td><td class="muted">'+p.code+'</td><td><strong>'+p.name+'</strong></td><td class="muted">Und</td><td class="num">'+p.stock+'</td>'+
+  '<td class="cell-in"><input class="input'+(o.qErr?' is-error':'')+'" value="'+p.qty+'" inputmode="numeric" aria-label="Cantidad de '+p.name+'"'+(o.qErr?' aria-invalid="true" aria-describedby="'+q+'"':'')+d+'>'+(o.qErr?'<div class="field-error" role="alert" id="'+q+'">'+o.qErr+'</div>':'')+'</td>'+
+  '<td class="cell-in"><input class="input'+(o.cErr?' is-error':'')+'" value="$ '+(o.cost||p.cost)+'" inputmode="numeric" aria-label="Costo unitario de '+p.name+'"'+(o.cErr?' aria-invalid="true" aria-describedby="'+c+'"':'')+d+'>'+(o.cErr?'<div class="field-error" role="alert" id="'+c+'">'+o.cErr+'</div>':'')+'</td>'+
+  '<td class="num strong">'+(o.sub||p.sub)+'</td><td class="num strong">'+(o.cpp||p.cpp)+'</td>'+
+  '<td><button type="button" class="btn btn-ghost btn-icon btn-sm" aria-label="Eliminar '+p.name+'"'+(o.del?' data-go="'+o.del+'"':' data-toast="Producto quitado del detalle (demostración)"')+d+'>'+ic('trash')+'</button></td></tr>';
+}
+function sedeField(o){
+  if(o.admin)return '<div class="field"><label for="f-sede">Sede <span class="req">*</span></label><select class="input" id="f-sede"><option>Bodega central (BOD)</option><option>Centro (CEN)</option><option>Laureles (LAU)</option><option selected>Poblado (POB)</option><option>Envigado (ENV)</option><option>Bello (BEL)</option></select><span class="field-help">Como administrador puedes elegir cualquier sede</span></div>';
+  return '<div class="field"><label for="f-sede">Sede</label><input class="input" id="f-sede" value="Laureles" disabled aria-describedby="h-sede"><span class="field-help" id="h-sede">'+ic('lock')+' Asignada a tu usuario</span></div>';
+}
+function form(o){
+  o=o||{};var rows=o.rows||[],n=rows.length,id=o.id||ID,d=o.disabled?' disabled':'';
+  var fields='<div class="field"><label for="f-prov">Proveedor <span class="req">*</span></label><select class="input" id="f-prov"'+d+'><option>Distribuidora Andina S.A.S.</option><option>Lácteos del Valle Ltda.</option><option>Aseo Total S.A.S.</option></select></div>'+
+  '<div class="field"><label for="f-oc">Orden de compra <span class="opt">(opcional)</span></label><select class="input" id="f-oc"'+d+'><option>OC-2026-0157</option><option>Sin orden de compra</option></select></div>'+
+  '<div class="field"><label for="f-fac">N.° factura / remisión <span class="req">*</span></label><input class="input" id="f-fac" value="FV-88213"'+d+'></div>'+
+  '<div class="field"><label for="f-fec">Fecha de recepción <span class="opt">(automática)</span></label><input class="input" id="f-fec" value="06/11/2026 10:42" disabled></div>'+sedeField(o);
+  var tbl;
+  if(n){
+    tbl='<div class="table-wrap"><table class="table t-form"><thead><tr><th>#</th><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Stock actual</th><th>Cantidad <span class="req">*</span></th><th>Costo unitario <span class="req">*</span></th><th class="num">Subtotal</th><th class="num">Nuevo CPP</th><th><span class="sr-only">Eliminar</span></th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
+  }else{
+    tbl='<div class="table-wrap"><table class="table t-form"><thead><tr><th>#</th><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Stock actual</th><th>Cantidad *</th><th>Costo unitario *</th><th class="num">Subtotal</th><th class="num">Nuevo CPP</th><th></th></tr></thead></table></div>'+emptyState('box','Agrega al menos un producto para confirmar','Busca por código o nombre, escanea un código de barras o carga los productos de una orden de compra.','<button type="button" class="btn btn-secondary" data-go="formulario:normal">'+ic('upload')+' Cargar desde OC</button>','h3');
+  }
+  var units=n?(o.units||'96 unidades'):'0 unidades',total=n?(o.total||'$1.159.200'):'$0';
+  var search='<div class="search-wrap">'+ic('search')+'<input class="input" type="search" placeholder="Agregar producto (código o nombre)…" aria-label="Agregar producto (código o nombre)"'+(o.search?' value="'+o.search+'" role="combobox" aria-expanded="true" aria-controls="dd" aria-describedby="dd"':'')+d+'>'+(o.dropdown||'')+'</div>';
+  var sub=n?(n+' productos agregados'):'Aún no hay productos agregados';
+  var html=pageHead([['Inventario',''],['Entradas','lista:normal'],'Nueva entrada'],'Nueva entrada de inventario','Registra los productos recibidos y actualiza sus existencias.','');
+  // flecha atrás junto al título
+  html=html.replace('<h1 class="h1" style="margin-top:6px">','<div class="title-row"><button type="button" class="btn btn-secondary btn-icon btn-sm" aria-label="Volver a entradas" data-go="formulario:cancelar">'+ic('back')+'</button><h1 class="h1">').replace('</h1>','</h1></div>');
+  if(o.adminBanner)html+=o.adminBanner;
+  html+=(o.banner||'')+
+  '<section class="card" aria-labelledby="t-datos"><div class="card-head"><div class="card-head-l"><h2 class="card-title" id="t-datos">Datos de la entrada</h2><span class="badge badge-info">Borrador · '+id+'</span></div></div><div class="card-body" style="padding-top:4px"><div class="form-grid">'+fields+'</div></div></section>'+
+  '<section class="card'+(o.cardErr?' has-error':'')+'" style="margin-top:16px" aria-labelledby="t-det"><div class="card-head"><div><h2 class="card-title" id="t-det">Detalle de productos</h2><p class="card-sub">'+sub+'</p></div><div class="head-tools">'+search+'<button type="button" class="btn btn-secondary"'+(o.disabled?' disabled':(n?' data-toast="Cargaría los productos de OC-2026-0157 (HU-05.3)"':' data-go="formulario:normal"'))+'>'+ic('upload')+' Cargar desde OC</button></div></div>'+tbl+
+  '<div class="detail-foot"><span class="muted">Los costos se muestran antes de impuestos.</span><div class="totals"><span class="muted">'+units+'</span><span class="muted">Total de la entrada</span><strong class="total">'+total+'</strong></div></div></section>'+
+  '<div class="form-actions"><button type="button" class="btn btn-ghost" data-go="formulario:cancelar"'+d+'>Cancelar</button><button type="button" class="btn btn-secondary" data-toast="Borrador '+id+' guardado" data-toast-type="success"'+d+'>Guardar borrador</button><button type="button" class="btn btn-primary" data-go="'+(o.confirmGo||'formulario:validacion')+'"'+d+'>'+(o.disabled?'<span class="spinner" aria-hidden="true"></span> ':'')+'Confirmar entrada</button></div>';
+  return html;
+}
+var ROWS_ERR=function(both){return [prodRow(1,P1),prodRow(2,P2),prodRow(3,P3,{qErr:'Debe ser un entero mayor a 0',cErr:both?'Debe ser mayor a 0':'',cost:both?'0':null,del:'formulario:corregido'}),prodRow(4,P4)]};
+var ROWS_OK=function(o){return [prodRow(1,P1,o),prodRow(2,P2,o),prodRow(3,P4,o)]};
+var TOP={title:'Inventario',sub:'Entradas de mercancía'};
+function formulario(e){
+  var r,o;
+  if(e==='normal')o={rows:ROWS_ERR(false)};
+  else if(e==='validacion')o={rows:ROWS_ERR(true),banner:banner('danger','<strong>No se puede confirmar la entrada.</strong> Corrige los 2 campos marcados en el detalle de productos: la cantidad y el costo unitario del producto 3.')};
+  else if(e==='corregido')o={rows:ROWS_OK(),confirmGo:'confirmar:normal'};
+  else if(e==='vacio')o={rows:[],confirmGo:'formulario:vacio-intento'};
+  else if(e==='vacio-intento')o={rows:[],confirmGo:'formulario:vacio-intento',cardErr:true,banner:banner('danger','<strong>La entrada debe tener al menos un producto.</strong> Agrega productos al detalle para poder confirmarla.')};
+  else if(e==='no-encontrado')o={rows:ROWS_OK(),confirmGo:'confirmar:normal',search:'Jabón líquido 1 L',dropdown:'<div class="dropdown" id="dd" role="status"><p class="strong">Producto no encontrado</p><p class="muted">No hay resultados para «Jabón líquido 1 L».</p><p><a href="#" data-toast="Abriría «Crear producto» (fuera de este mockup). Al volver, el borrador se conserva.">Crear producto</a> <span class="muted">· tu borrador se conservará</span></p></div>'};
+  else if(e==='cancelar'){
+    var m=modal({id:'mc',esc:'formulario:normal',inner:'<div class="modal-head"><h2 class="modal-title" id="mc-t">¿Descartar el borrador?</h2></div><div class="modal-body" id="mc-d"><p>Se descartará el borrador <strong>'+ID+'</strong> con sus 4 productos. <strong>No se modificará el stock.</strong></p></div><div class="modal-foot"><button type="button" class="btn btn-secondary" data-go="formulario:normal" data-autofocus>Seguir editando</button><button type="button" class="btn btn-danger" data-toast="Borrador descartado. El stock no se modificó." data-go="lista:normal">Descartar borrador</button></div>'});
+    return {html:withOverlay(form({rows:ROWS_ERR(false)}),m),title:TOP.title,sub:TOP.sub};
+  }
+  return {html:form(o),title:TOP.title,sub:TOP.sub};
+}
+
+/* ---------- 3. Confirmar ---------- */
+function confirmar(){
+  var m=modal({id:'mf',esc:'formulario:corregido',inner:'<div class="modal-head"><h2 class="modal-title" id="mf-t">Confirmar entrada de mercancía</h2></div><div class="modal-body" id="mf-d"><dl class="kv" style="grid-template-columns:130px minmax(0,1fr);margin:6px 0 14px"><dt>Entrada</dt><dd>'+ID+'</dd><dt>Proveedor</dt><dd>Distribuidora Andina S.A.S.</dd><dt>Factura / remisión</dt><dd>FV-88213</dd><dt>Productos</dt><dd>3</dd><dt>Unidades</dt><dd>96</dd><dt>Total</dt><dd>$1.159.200</dd></dl><div class="alert-banner alert-warning" style="margin:0">'+ic('alert')+'<div class="alert-body">Una vez confirmada, la entrada no podrá modificarse ni eliminarse; solo podrá anularse con un motivo, lo que generará un movimiento inverso.</div></div></div><div class="modal-foot"><button type="button" class="btn btn-secondary" data-go="formulario:corregido" data-autofocus>Volver</button><button type="button" class="btn btn-primary" data-go="guardando:normal">Confirmar entrada</button></div>'});
+  return {html:withOverlay(form({rows:ROWS_OK(),confirmGo:'confirmar:normal'}),m),title:TOP.title,sub:TOP.sub};
+}
+/* ---------- 4. Guardando ---------- */
+function guardando(){
+  var m=modal({id:'mg',noDesc:true,inner:'<div class="modal-body" id="mg-d" role="status" style="text-align:center;padding:32px 28px 28px"><span class="spinner" style="width:34px;height:34px;border-width:3px;color:var(--primary)" aria-hidden="true"></span><h2 class="modal-title" id="mg-t" style="margin-top:14px">Registrando entrada…</h2><p class="muted" style="margin-top:6px">Guardando '+ID+' y actualizando el stock de Laureles. Debe completarse en menos de 3 segundos.</p></div>'});
+  return {html:withOverlay(form({rows:ROWS_OK(),disabled:true}),m),title:TOP.title,sub:TOP.sub};
+}
+/* ---------- 5. Éxito ---------- */
+function exito(){
+  var h='<div class="card center-card"><span class="big-ico ok">'+ic('check')+'</span><h1>Entrada '+ID+' registrada</h1><p class="muted">El stock de Laureles se actualizó y el movimiento quedó en el kardex.</p><dl class="kv"><dt>Proveedor</dt><dd>Distribuidora Andina S.A.S.</dd><dt>Factura / remisión</dt><dd>FV-88213</dd><dt>Fecha de recepción</dt><dd>06/11/2026 10:42</dd><dt>Productos / unidades</dt><dd>3 productos · 96 unidades</dd><dt>Total</dt><dd>$1.159.200</dd><dt>Registró</dt><dd>Laura Méndez · Laureles</dd></dl><div class="actions"><button type="button" class="btn btn-primary" data-go="detalle:normal">Ver entrada</button><button type="button" class="btn btn-secondary" data-go="formulario:vacio">Registrar otra entrada</button><button type="button" class="btn btn-ghost" aria-disabled="true" title="Fuera del alcance de este mockup">Ir al kardex</button></div></div>';
+  return {html:h,title:TOP.title,sub:TOP.sub,after:function(){toast('Entrada '+ID+' registrada',{type:'success'})}};
+}
+/* ---------- 6. Detalle ---------- */
+function detalle(e){
+  var an=e==='anulada',b='';
+  if(e==='editar-intento')b=banner('warning','<strong>Una entrada confirmada no se puede modificar; solo se puede anular.</strong>','<button type="button" class="btn btn-danger btn-sm" data-go="detalle:anular">Anular entrada</button>');
+  if(an)b=banner('danger','<strong>Entrada anulada el 06/11/2026 11:05 por Laura Méndez.</strong><br>Motivo: «Factura duplicada: la mercancía ya estaba registrada en ENT-LAU-000481».<br>Movimiento inverso generado: <strong>MOV-INV-LAU-000127</strong> (−96 unidades en Laureles).');
+  var acts='<button type="button" class="btn btn-secondary" data-go="detalle:editar-intento"'+(an?' disabled':'')+'>Editar</button><button type="button" class="btn btn-danger" data-go="detalle:anular"'+(an?' disabled':'')+'>Anular entrada</button>';
+  var html=pageHead([['Inventario',''],['Entradas','lista:normal'],ID],'Entrada '+ID+' <span class="badge badge-'+(an?'neutral':'success')+'" style="vertical-align:middle;margin-left:6px">'+(an?'Anulada':'Confirmada')+'</span>','Registrada por Laura Méndez el 06/11/2026 10:43 · Solo lectura',acts);
+  html+=b+
+  '<section class="card" aria-labelledby="d1"><div class="card-head"><h2 class="card-title" id="d1">Datos de la entrada</h2></div><div class="card-body" style="padding-top:4px"><dl class="kv kv-4"><dt>Proveedor</dt><dd>Distribuidora Andina S.A.S.</dd><dt>Orden de compra</dt><dd>OC-2026-0157</dd><dt>Factura / remisión</dt><dd>FV-88213</dd><dt>Fecha de recepción</dt><dd>06/11/2026 10:42</dd><dt>Sede</dt><dd>Laureles</dd><dt>Registró</dt><dd>Laura Méndez · 06/11/2026 10:43</dd></dl></div></section>'+
+  '<section class="card" style="margin-top:16px" aria-labelledby="d2"><div class="card-head"><div><h2 class="card-title" id="d2">Detalle de productos</h2><p class="card-sub">3 productos · 96 unidades</p></div></div><div class="table-wrap"><table class="table" style="min-width:820px"><thead><tr><th>#</th><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Cantidad</th><th class="num">Costo unitario</th><th class="num">Subtotal</th><th class="num">CPP resultante</th></tr></thead><tbody>'+
+  [[1,P1],[2,P2],[3,P4]].map(function(x){var p=x[1];return '<tr><td class="muted">'+x[0]+'</td><td class="muted">'+p.code+'</td><td><strong>'+p.name+'</strong></td><td class="muted">Und</td><td class="num">'+p.qty+'</td><td class="num">$'+p.cost+'</td><td class="num strong">'+p.sub+'</td><td class="num strong">'+p.cpp+'</td></tr>'}).join('')+
+  '</tbody></table></div><div class="detail-foot"><span class="muted">Los costos se muestran antes de impuestos.</span><div class="totals"><span class="muted">96 unidades</span><span class="muted">Total de la entrada</span><strong class="total">$1.159.200</strong></div></div></section>';
+  var bg=html;
+  if(e==='anular'||e==='anular-error'){
+    var er=e==='anular-error';
+    var m=modal({id:'ma',esc:'detalle:normal',inner:'<div class="modal-head"><h2 class="modal-title" id="ma-t">Anular entrada '+ID+'</h2></div><div class="modal-body" id="ma-d"><p style="margin-bottom:12px">Se generará un movimiento inverso que descuenta del stock de Laureles las 96 unidades. La entrada quedará marcada como «Anulada».</p><div class="field"><label for="motivo">Motivo de anulación <span class="req">*</span></label><textarea class="input'+(er?' is-error':'')+'" id="motivo" rows="3" placeholder="Describe por qué se anula esta entrada"'+(er?' aria-invalid="true" aria-describedby="motivo-e"':'')+' data-autofocus></textarea>'+(er?'<div class="field-error" role="alert" id="motivo-e">El motivo de anulación es obligatorio.</div>':'')+'</div></div><div class="modal-foot"><button type="button" class="btn btn-secondary" data-go="detalle:normal">Cancelar</button><button type="button" class="btn btn-danger" data-act="anular">Anular entrada</button></div>'});
+    return {html:withOverlay(bg,m),title:TOP.title,sub:TOP.sub};
+  }
+  return {html:html,title:TOP.title,sub:TOP.sub,after:an?function(){toast('Entrada anulada. Se generó el movimiento inverso.',{type:'success'})}:null};
+}
+/* ---------- 7. Acceso ---------- */
+function acceso(e){
+  var c;
+  if(e==='ip-no-autorizada'){
+    c='<div class="bare-wrap"><div class="card center-card" role="alert"><span class="big-ico bad">'+ic('lock')+'</span><h1>Acceso bloqueado: esta red no está autorizada</h1><p class="muted">Stock Central solo puede usarse desde las IP públicas de las sedes autorizadas.</p><dl class="kv"><dt>IP detectada</dt><dd>181.52.10.4</dd><dt>Fecha y hora</dt><dd>06/11/2026 10:41</dd></dl><p style="margin-top:12px"><strong>El intento quedó registrado en el log de auditoría.</strong></p><div class="actions"><button type="button" class="btn btn-secondary" data-go="acceso:ip-no-autorizada">'+ic('refresh')+' Reintentar</button><button type="button" class="btn btn-ghost" data-toast="Contacta al administrador general de tu empresa">Contactar al administrador</button></div></div></div>';
+    return {html:c,bare:true};
+  }
+  if(e==='sin-permiso'){
+    c=pageHead([['Inventario',''],['Entradas','lista:normal']],'Entradas de mercancía','')+'<div class="card center-card" role="alert"><span class="big-ico warn">'+ic('lock')+'</span><h1>No tienes permiso para registrar entradas</h1><p class="muted">Tu rol (Consulta) no incluye permiso de creación en inventario. El intento quedó registrado en el log de auditoría. Si lo necesitas, solicítalo al administrador general.</p><div class="actions"><button type="button" class="btn btn-primary" data-go="lista:normal">Volver a entradas</button></div></div>';
+    return {html:c,title:TOP.title,sub:TOP.sub,user:{ini:'AG',name:'Andrés Gil',role:'Consulta · Sede Laureles'}};
+  }
+  if(e==='otra-sede'){
+    c=pageHead([['Inventario',''],['Entradas','lista:normal'],'Nueva entrada'],'Nueva entrada de inventario','')+banner('danger','<strong>Solo puedes registrar entradas en tu sede asignada (Laureles).</strong> El intento quedó registrado.')+'<div class="card"><div class="card-body"><dl class="kv"><dt>Sede solicitada</dt><dd>Poblado (POB)</dd><dt>Tu sede asignada</dt><dd>Laureles (LAU)</dd><dt>Rol</dt><dd>Bodeguera</dd></dl><div class="form-actions" style="justify-content:flex-start"><button type="button" class="btn btn-primary" data-go="formulario:vacio">Registrar en Laureles</button><button type="button" class="btn btn-secondary" data-go="lista:normal">Volver a entradas</button></div></div></div>';
+    return {html:c,title:TOP.title,sub:TOP.sub};
+  }
+  return {html:form({rows:ROWS_OK(),id:'ENT-POB-000213',admin:true,confirmGo:'confirmar:normal',adminBanner:banner('info','Como <strong>administrador general</strong> puedes registrar entradas en cualquier sede. El campo Sede está habilitado.')}),title:TOP.title,sub:TOP.sub,user:ADMIN,sede:'Todas (5 + Bodega)'};
+}
+
+var screens={
+ lista:{label:'Lista de entradas',states:[['normal','Normal','La sede tiene entradas registradas'],['vacio','Vacío','La sede aún no tiene entradas'],['carga','Carga','Consultando el listado (skeleton)'],['error','Error','Falla al cargar el listado']],auto:function(e){return e==='carga'?{to:'lista:normal',ms:1800}:null},render:lista},
+ formulario:{label:'Formulario de entrada',states:[['normal','Normal (con error en fila 3, CA2)','Borrador con 4 productos; la cantidad 0 se marca al salir del campo'],['validacion','Error de validación (CA2/E3)','Al pulsar «Confirmar» con cantidad o costo inválidos'],['corregido','Corregido (3 productos)','Se elimina el producto inválido; listo para confirmar'],['vacio','Vacío (sin productos)','Entrada nueva sin productos en el detalle'],['vacio-intento','Vacío · intento de confirmar (CA3/E4)','Se pulsa «Confirmar» sin productos'],['no-encontrado','Producto no encontrado (A1)','La búsqueda no devuelve resultados'],['cancelar','Cancelar borrador (A2)','Se pulsa «Cancelar» o la flecha atrás']],render:formulario},
+ confirmar:{label:'Confirmar entrada',states:[['normal','Modal de confirmación (CA5)','Se pulsa «Confirmar entrada» con el detalle válido']],render:confirmar},
+ guardando:{label:'Guardando',states:[['normal','Carga: registrando entrada','Entre la confirmación y el éxito (< 3 s)']],auto:function(){return {to:'exito:normal',ms:2500}},render:guardando},
+ exito:{label:'Éxito',states:[['normal','Entrada registrada','La entrada se guardó y el stock se actualizó']],render:exito},
+ detalle:{label:'Detalle de entrada',states:[['normal','Confirmada (solo lectura)','Se abre una entrada confirmada'],['editar-intento','Intento de editar (E6)','Se pulsa «Editar» en una entrada confirmada'],['anular','Anular: pedir motivo (A3)','Se pulsa «Anular entrada»'],['anular-error','Anular: motivo vacío','Se confirma la anulación sin motivo'],['anulada','Anulada','La entrada ya fue anulada']],render:detalle},
+ acceso:{label:'Errores de acceso',states:[['ip-no-autorizada','IP no autorizada (E1)','Acceso desde una red que no es de una sede'],['sin-permiso','Sin permiso (E2)','El rol no puede crear entradas'],['otra-sede','Otra sede (E5/CA4)','Bodeguero intenta registrar en una sede distinta a la suya'],['otra-sede-admin','Administrador: elige sede','El administrador sí puede elegir la sede']],render:acceso}
+};
+
+function notes(){
+  var L=function(n){return '<a href="#pantalla='+n.split(':')[0]+'&estado='+n.split(':')[1]+'">'+n+'</a>'};
+  return ''+
+'<section><h3>1. Objetivo y pantalla</h3><p><strong>Objetivo:</strong> validar con el responsable el diseño y la navegación del registro de una entrada de mercancía a una sede, antes de codificar.</p><ul><li><strong>Usuarios:</strong> bodeguero de la sede (Laura Méndez, Bodeguera · Laureles) y administrador general.</li><li><strong>Trazabilidad:</strong> CU.0002 · HU-04.1 (CA1–CA5) · HU-05.3 «Cargar desde OC» · HU-06.1 columna «Nuevo CPP». Problemas que resuelve: 3 (sin control de quién modifica las cantidades) y 6 (valoración contable manual y tardía).</li><li><strong>Spec:</strong> <a href="../03-specs/0001-registrar-entrada-mercancia.md">../03-specs/0001-registrar-entrada-mercancia.md</a></li><li><strong>Fidelidad:</strong> Alta — basado en el prototipo Figma del equipo: <a href="https://www.figma.com/design/ClvZOp0FZWtxOANY4issYm/Dashboard?node-id=3-712" target="_blank" rel="noopener">Figma (node-id 3-712)</a>.</li></ul></section>'+
+'<section><h3>2. Flujo / navegación</h3><div class="flow"><span class="node">Lista</span><span class="arrow">→</span><span class="node">Formulario</span><span class="arrow">→</span><span class="node">Confirmar (modal)</span><span class="arrow">→</span><span class="node">Guardando</span><span class="arrow">→</span><span class="node">Éxito</span><span class="arrow">→</span><span class="node">Detalle</span></div><ul><li>Lista → «Nueva entrada» abre el formulario; clic en una fila abre el detalle.</li><li>Formulario normal → «Confirmar» muestra los errores (CA2); al eliminar la fila inválida queda <em>corregido</em> y «Confirmar» abre el modal. «Cancelar» abre el modal de descarte (A2).</li><li>Modal → «Confirmar entrada» → guardando (auto, 2,5 s) → éxito → «Ver entrada» / «Registrar otra entrada».</li><li>Detalle → «Editar» (E6) o «Anular entrada» (A3) → anulada.</li><li>Acceso (E1, E2, E5) se ven desde el selector de pantalla.</li></ul></section>'+
+'<section><h3>3. Estados</h3>'+statesTable()+'</section>'+
+'<section><h3>4. Componentes reutilizados</h3><p>Primitivas del design system StockCentral: <code>.btn</code> (primary, secondary, ghost, danger), <code>.card</code>, <code>.table</code>, <code>.badge</code> (success, neutral, info), <code>.field</code> / <code>.input</code> / <code>.input.is-error</code>, <code>.modal</code>, <code>.toast</code>, <code>.empty-state</code>, <code>.skeleton</code>, <code>.alert-banner</code> (info, warning, danger), sidebar y topbar.</p></section>'+
+'<section><h3>5. Responsive</h3><ul><li><strong>≥ 1280 px:</strong> layout completo (sidebar 232 px).</li><li><strong>768–1279 px:</strong> sidebar colapsada a iconos (64 px); tablas con scroll horizontal; formulario en 3 columnas.</li><li><strong>&lt; 768 px:</strong> sidebar como drawer con botón hamburguesa; formulario a 1 columna; tablas con scroll horizontal. La app móvil nativa está fuera de alcance; el uso principal es escritorio en las sedes.</li></ul></section>'+
+'<section><h3>6. Notas de interacción</h3><ul><li>El consecutivo (ENT-sede-n.°) y la fecha de recepción los asigna el sistema; el campo Sede viene bloqueado según el usuario (CA4). El administrador ve un select habilitado.</li><li>Enter o un lector de código de barras en el buscador agrega el producto al detalle.</li><li>Cantidad y costo se validan en línea al salir del campo; el error se explica junto al campo (CA2).</li><li>El subtotal, el total y el «Nuevo CPP» se actualizan en vivo (aquí los valores son estáticos).</li><li>«Confirmar entrada» siempre pide confirmación y advierte que no podrá modificarse (CA5).</li><li>El guardado debe completarse en menos de 3 s.</li></ul><p style="margin-top:8px"><strong>Accesibilidad:</strong> contraste AA; foco visible (outline 2 px azul); etiquetas asociadas a cada campo; errores con <code>role="alert"</code>; mensajes con <code>aria-live="polite"</code>; el modal toma el foco, lo mantiene dentro y se cierra con Escape; lectura por lector de pantalla del estado de cada pantalla.</p><p style="margin-top:8px"><strong>Antes / después:</strong> No aplica — pantalla nueva.</p></section>'+
+'<section><h3>7. Aprobación del responsable</h3><ul><li><strong>Responsable:</strong> Product Owner — administrador general de la empresa cliente</li><li><strong>Estado:</strong> <span class="tag">Pendiente de aprobación</span></li><li><strong>Fecha:</strong> —</li><li><strong>Observaciones:</strong> —</li></ul></section>';
+}
+initMock({num:'0001',title:'Registrar entrada de mercancía',start:'lista',user:U,sede:'Sede: Laureles',screens:screens,notes:notes,actions:{anular:function(){var v=document.getElementById('motivo');go(v&&v.value.trim()?'detalle:anulada':'detalle:anular-error',{flow:true})}}});
+})();
+
+</script>
+</body>
+</html>

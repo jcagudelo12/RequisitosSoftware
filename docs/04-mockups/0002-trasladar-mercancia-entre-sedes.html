@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 0002 · Trasladar mercancía entre sedes — StockCentral</title>
+<style>
+/* ===== Design system StockCentral (idéntico en los 4 mockups) ===== */
+:root{
+  --sidebar-bg:#1b2533; --sidebar-text:#c9d1dc; --sidebar-muted:#7d8899; --sidebar-active:#2b3a4f;
+  --brand:#f59e0b; --bg:#f3f4f6; --surface:#ffffff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+  --primary:#2563eb; --primary-hover:#1d4ed8;
+  --success:#15803d; --success-bg:#dcfce7; --warning:#b45309; --warning-bg:#fef3c7;
+  --danger:#b91c1c; --danger-bg:#fee2e2; --info:#1d4ed8; --info-bg:#dbeafe;
+  --radius:8px; --radius-sm:6px; --shadow:0 1px 2px rgba(16,24,40,.06);
+  --chrome-bg:#312e81; --chrome-text:#ffffff; --chrome-h:44px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.45;color:var(--text);background:var(--bg);overflow-x:hidden}
+a{color:var(--primary)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+[hidden]{display:none !important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ----- Chrome del mockup (NO es parte del producto) ----- */
+.mock-chrome{position:sticky;top:0;z-index:100;background:var(--chrome-bg);color:var(--chrome-text);min-height:44px;display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:6px 14px;font-size:13px}
+.mock-chrome .mc-id{font-weight:700;letter-spacing:.02em}
+.mock-chrome a{color:#c7d2fe}
+.mock-chrome label{display:flex;align-items:center;gap:6px}
+.mock-chrome select{background:#4338ca;color:#fff;border:1px solid #6366f1;border-radius:6px;padding:4px 8px;font:inherit;max-width:240px}
+.mock-chrome .mc-notes{margin-left:auto;background:#fff;color:var(--chrome-bg);border:0;border-radius:6px;padding:5px 12px;font:inherit;font-weight:700;cursor:pointer}
+.mock-next{display:inline-block;margin-top:12px;font-size:12px;color:var(--chrome-bg);font-weight:600}
+
+/* ----- Shell ----- */
+.app{display:flex;min-height:calc(100vh - var(--chrome-h))}
+.sidebar{width:232px;flex:0 0 232px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;position:sticky;top:var(--chrome-h);height:calc(100vh - var(--chrome-h));overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 18px;font-weight:700;color:#fff;font-size:15px}
+.brand-logo{width:28px;height:28px;border-radius:6px;background:var(--brand);color:#1b2533;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 28px}
+.nav{padding:4px 10px;flex:1}
+.nav-group{font-size:10.5px;letter-spacing:.08em;color:var(--sidebar-muted);padding:14px 10px 6px;text-transform:uppercase}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;color:var(--sidebar-text);text-decoration:none;font-size:13.5px}
+.nav a:hover{background:rgba(255,255,255,.05)}
+.nav a.active{background:var(--sidebar-active);color:#fff;font-weight:600}
+.nav a[aria-disabled="true"]{cursor:not-allowed}
+.nav-ico{width:16px;height:16px;border:1.6px solid currentColor;border-radius:4px;flex:0 0 16px;opacity:.85}
+.sidebar-foot{padding:14px 18px;font-size:11.5px;color:var(--sidebar-muted);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex:0 0 8px}
+.backdrop{display:none}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px;position:sticky;top:var(--chrome-h);z-index:20}
+.hamburger{display:none;background:none;border:1px solid var(--border);border-radius:6px;padding:6px;color:var(--text);cursor:pointer}
+.tb-title{min-width:0}
+.tb-title h1{font-size:17px;margin:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumbs{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-search{margin-left:auto;width:300px;display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--muted)}
+.tb-search input{border:0;outline:0;font:inherit;width:100%;background:transparent;color:var(--text)}
+.tb-sede{border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;white-space:nowrap}
+.tb-user{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:#e0e7ff;color:#3730a3;display:grid;place-items:center;font-weight:700;font-size:12.5px;flex:0 0 34px}
+.u-meta{display:flex;flex-direction:column;line-height:1.2}
+.u-name{font-weight:600;font-size:13px}
+.u-role{font-size:11.5px;color:var(--muted)}
+.content{padding:24px;flex:1;min-width:0}
+body.bare .sidebar, body.bare .topbar{display:none}
+
+/* ----- Página ----- */
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.page-head h2{margin:0;font-size:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.page-head p{margin:4px 0 0;color:var(--muted)}
+.head-left{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.back{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;display:grid;place-items:center;color:var(--text);text-decoration:none;background:#fff;flex:0 0 32px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.card-head h3{margin:0;font-size:15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-sub{font-size:12px;color:var(--muted);font-weight:400}
+.card-body{padding:18px}
+.card-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.foot-info{margin-right:auto;color:var(--muted);font-size:12.5px}
+.foot-total{font-weight:700;font-size:15px;color:var(--text)}
+.grid{display:grid;gap:16px}
+.grid>*{min-width:0}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.kpi .k-label{font-size:12px;color:var(--muted)}
+.kpi .k-value{font-size:22px;font-weight:700;margin-top:4px}
+
+/* ----- Botones ----- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;padding:8px 14px;font:inherit;font-weight:600;font-size:13px;border:1px solid transparent;cursor:pointer;text-decoration:none;line-height:1.2;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:#fff;color:var(--text);border-color:var(--border)}
+.btn-secondary:hover{background:#f9fafb}
+.btn-ghost{background:transparent;color:var(--muted)}
+.btn-ghost:hover{color:var(--text)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.icon-btn{background:none;border:0;color:var(--muted);padding:6px;border-radius:6px;cursor:pointer;display:inline-grid;place-items:center}
+.icon-btn:hover{background:#f3f4f6;color:var(--danger)}
+
+/* ----- Tablas ----- */
+.table-wrap{overflow-x:auto;position:relative}
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;text-align:left;padding:10px 14px;background:#f9fafb;border-bottom:1px solid var(--border);white-space:nowrap}
+.table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table tbody tr:last-child td{border-bottom:0}
+.table td:first-child{white-space:nowrap}
+.table .num{text-align:right;font-variant-numeric:tabular-nums}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+.strong{font-weight:600}
+.row-warn td{background:var(--warning-bg)}
+.row-muted td{color:var(--muted)}
+.cell-err{color:var(--danger);font-weight:700}
+.cell-warn{color:var(--warning);font-weight:700}
+
+/* ----- Badges ----- */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap;line-height:1.5}
+.badge-success{background:var(--success-bg);color:var(--success)}
+.badge-warning{background:var(--warning-bg);color:var(--warning)}
+.badge-danger{background:var(--danger-bg);color:var(--danger)}
+.badge-info{background:var(--info-bg);color:var(--info)}
+.badge-neutral{background:#f3f4f6;color:#374151;border:1px solid var(--border)}
+
+/* ----- Formularios ----- */
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.field .lbl-like{font-size:12.5px;font-weight:600}
+.req{color:var(--danger)}
+.input{font:inherit;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;background:#fff;color:var(--text);width:100%}
+textarea.input{min-height:76px;resize:vertical}
+.input[disabled],.input[readonly]{background:#f3f4f6;color:#4b5563}
+.input.is-error{border-color:var(--danger);background:#fff7f7}
+.input-qty{width:100px;text-align:right}
+.help{font-size:11.5px;color:var(--muted)}
+.error-msg{font-size:11.5px;color:var(--danger);font-weight:600}
+.search-row{display:flex;gap:10px;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:8px;border:1px solid #d1d5db;border-radius:6px;padding:7px 10px;color:var(--muted);min-width:260px;flex:1;background:#fff}
+.search-box input{border:0;outline:0;font:inherit;width:100%;background:transparent;color:var(--text)}
+.radio-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px}
+.radio-row.selected{border-color:var(--primary);background:#f5f8ff}
+
+/* ----- Alertas, vacío, carga ----- */
+.alert-banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;border:1px solid;margin-bottom:16px;font-size:13px}
+.alert-banner strong{display:block}
+.alert-ico{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 20px;color:#fff}
+.alert-info{background:var(--info-bg);border-color:#bfdbfe;color:#1e3a8a}
+.alert-info .alert-ico{background:var(--info)}
+.alert-warning{background:var(--warning-bg);border-color:#fde68a;color:#78350f}
+.alert-warning .alert-ico{background:var(--warning)}
+.alert-danger{background:var(--danger-bg);border-color:#fecaca;color:#7f1d1d}
+.alert-danger .alert-ico{background:var(--danger)}
+.alert-neutral{background:#f9fafb;border-color:var(--border);color:#374151}
+.alert-neutral .alert-ico{background:#6b7280}
+.alert-banner .btn{margin-left:auto}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-ico{width:48px;height:48px;border-radius:12px;background:#eef2ff;color:var(--primary);display:grid;place-items:center;margin:0 auto 12px;font-size:22px;font-weight:700}
+.empty-state h4{color:var(--text);margin:0 0 6px;font-size:15px}
+.empty-state p{margin:0 0 14px}
+.skeleton{background:linear-gradient(90deg,#eceef1 25%,#f6f7f9 37%,#eceef1 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;border-radius:4px;height:12px}
+@keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.spinner{width:18px;height:18px;border:2.5px solid #c7d2fe;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;flex:0 0 18px}
+.spinner-lg{width:36px;height:36px;border-width:3.5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.skeleton,.spinner{animation:none}}
+
+/* ----- Modal, toast, drawer ----- */
+.modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.modal{background:#fff;border-radius:10px;width:100%;max-width:520px;box-shadow:0 20px 40px rgba(0,0,0,.2);max-height:calc(100vh - 32px);overflow:auto}
+.modal-head{padding:18px 20px 0}
+.modal-head h3{margin:0;font-size:16px}
+.modal-body{padding:12px 20px}
+.modal-foot{padding:14px 20px 18px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.modal-center{text-align:center;padding:30px 24px}
+.modal-center p{color:var(--muted);margin:6px 0 0}
+.toast{position:fixed;right:24px;bottom:24px;background:#111827;color:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.25);display:flex;gap:10px;align-items:center;z-index:70;max-width:calc(100vw - 32px)}
+.toast .t-ok{color:#4ade80;font-weight:800}
+.toast .t-warn{color:#fbbf24;font-weight:800}
+.toast a{color:#93c5fd}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);background:#fff;z-index:65;box-shadow:-10px 0 30px rgba(0,0,0,.15);overflow:auto}
+
+/* ----- Resultado, bloqueo, kv ----- */
+.result{display:flex;gap:16px;align-items:flex-start;padding:20px}
+.result h3{margin:0 0 4px;font-size:17px}
+.result p{margin:0;color:var(--muted)}
+.result-ico{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:20px;font-weight:800;flex:0 0 44px}
+.ok{background:var(--success-bg);color:var(--success)}
+.warn{background:var(--warning-bg);color:var(--warning)}
+.bad{background:var(--danger-bg);color:var(--danger)}
+.blocked{max-width:560px;margin:40px auto;text-align:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:36px 28px;box-shadow:var(--shadow)}
+.blocked h2{margin:14px 0 8px;font-size:20px}
+.blocked p{color:var(--muted);margin:0 0 10px}
+.blocked .result-ico{margin:0 auto}
+.blocked .brand-row{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;margin-bottom:22px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+
+/* ----- Tabs, timeline, progress ----- */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);padding:0 14px;overflow-x:auto}
+.tab{padding:12px 10px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;text-decoration:none;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--primary)}
+.count{background:#eef2ff;color:#3730a3;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:4px}
+.timeline{list-style:none;margin:0;padding:0;display:flex}
+.tl-step{flex:1;position:relative;padding-top:30px;min-width:0}
+.tl-step::before{content:"";position:absolute;top:10px;left:0;right:0;height:2px;background:var(--border)}
+.tl-step:first-child::before{left:50%}
+.tl-step:last-child::before{right:50%}
+.tl-step.done::before{background:var(--success)}
+.tl-dot{position:absolute;top:0;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--border);display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff}
+.tl-step.done .tl-dot{background:var(--success);border-color:var(--success)}
+.tl-step.current .tl-dot{border-color:var(--info);background:var(--info-bg);color:var(--info)}
+.tl-step.cancel .tl-dot{background:var(--danger);border-color:var(--danger)}
+.tl-step.warn .tl-dot{background:var(--warning);border-color:var(--warning)}
+.tl-label{text-align:center;font-weight:600;font-size:13px}
+.tl-meta{text-align:center;font-size:11.5px;color:var(--muted)}
+.progress{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--primary)}
+
+/* ----- Panel de notas del mockup ----- */
+.notes{position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);background:#fff;z-index:120;box-shadow:-10px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .2s;display:flex;flex-direction:column;visibility:hidden}
+.notes.open{transform:none;visibility:visible}
+.notes-head{background:var(--chrome-bg);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.notes-head h2{font-size:15px;margin:0}
+.notes-head button{background:#fff;color:var(--chrome-bg);border:0;border-radius:6px;padding:4px 10px;font:inherit;font-weight:700;cursor:pointer}
+.notes-body{overflow-y:auto;padding:4px 20px 32px;font-size:13px}
+.notes-body h3{font-size:14px;margin:22px 0 8px;color:var(--chrome-bg)}
+.notes-body ul{padding-left:18px;margin:6px 0}
+.notes-body li{margin:3px 0}
+.notes-body table{width:100%;border-collapse:collapse;font-size:12.5px}
+.notes-body th,.notes-body td{border:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+.notes-body th{background:#f9fafb}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow .node{background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;padding:4px 8px;font-size:12px;text-decoration:none;color:#312e81}
+.flow .arr{color:var(--muted)}
+
+/* ----- Responsive ----- */
+@media (max-width:1279px){
+  .sidebar{width:64px;flex-basis:64px}
+  .sidebar .lbl,.nav-group{display:none}
+  .nav a{justify-content:center}
+  .brand{justify-content:center;padding:20px 0}
+  .sidebar-foot{justify-content:center;padding:14px 0}
+  .tb-search{width:220px}
+  .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:767px){
+  .sidebar{position:fixed;left:0;top:0;height:100vh;width:260px;flex-basis:260px;z-index:90;transform:translateX(-100%);transition:transform .2s}
+  .sidebar .lbl{display:inline}
+  .nav-group{display:block}
+  .nav a{justify-content:flex-start}
+  .brand{justify-content:flex-start;padding:20px 18px}
+  .sidebar-foot{justify-content:flex-start;padding:14px 18px}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:85}
+  .hamburger{display:inline-grid;place-items:center}
+  .tb-search,.u-meta,.tb-sede{display:none}
+  .topbar{padding:0 12px;gap:10px}
+  .tb-user{margin-left:auto}
+  .content{padding:16px}
+  .form-grid,.grid-4,.grid-2{grid-template-columns:minmax(0,1fr)}
+  .timeline{flex-direction:column;gap:16px}
+  .tl-step{padding:0 0 0 34px}
+  .tl-step::before{top:0;bottom:-16px;left:10px;right:auto;width:2px;height:auto}
+  .tl-step:first-child::before{left:10px}
+  .tl-step:last-child::before{display:none}
+  .tl-dot{left:0;transform:none}
+  .tl-label,.tl-meta{text-align:left}
+  .toast{left:16px;right:16px;bottom:16px}
+  .card-foot .btn{flex:1 1 auto}
+  .foot-info{width:100%}
+  .mock-chrome select{max-width:150px}
+  .search-box{min-width:0}
+  .result{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<a class="sr-only" href="#content">Saltar al contenido</a>
+
+<!-- ===== Chrome del mockup (no forma parte del producto) ===== -->
+<div class="mock-chrome" id="mock-chrome" role="region" aria-label="Controles del mockup (no forman parte del producto)">
+  <span class="mc-id">MOCKUP 0002 · Trasladar mercancía entre sedes</span>
+  <a href="../03-specs/0002-trasladar-mercancia-entre-sedes.md">Ver spec</a>
+  <label>Pantalla <select id="mc-screen"></select></label>
+  <label>Estado <select id="mc-state"></select></label>
+  <button type="button" class="mc-notes" id="mc-notes" aria-expanded="false" aria-controls="notes">Notas del mockup</button>
+</div>
+
+<div id="live" class="sr-only" aria-live="polite"></div>
+
+<div class="app">
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+    <div class="brand"><span class="brand-logo" aria-hidden="true">SI</span><span class="lbl">Stock Central</span></div>
+    <nav class="nav">
+      <a href="0004-dashboard-stock-consolidado.html" title="Dashboard"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Dashboard</span></a>
+      <div class="nav-group">Inventario</div>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Productos</span></a>
+      <a href="0001-registrar-entrada-mercancia.html" title="Entradas"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Entradas</span></a>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Salidas y ajustes</span></a>
+      <a href="0002-trasladar-mercancia-entre-sedes.html" class="active" aria-current="page" title="Traslados"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Traslados</span></a>
+      <a href="0003-toma-fisica-conciliacion.html" title="Toma física"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Toma física</span></a>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Kardex</span></a>
+      <div class="nav-group">Gestión</div>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Compras</span></a>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Reportes PDF</span></a>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Sedes y usuarios</span></a>
+      <a href="#" aria-disabled="true" title="Fuera del alcance de este mockup"><span class="nav-ico" aria-hidden="true"></span><span class="lbl">Auditoría</span></a>
+    </nav>
+    <div class="sidebar-foot" title="IP 190.85.42.17 · Sede autorizada"><span class="dot" aria-hidden="true"></span><span class="lbl">IP 190.85.42.17 · Sede autorizada</span></div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+
+  <div class="main">
+    <!-- ===== Topbar ===== -->
+    <header class="topbar">
+      <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="tb-title"><h1 id="tb-title">Traslados</h1><div class="crumbs" id="tb-crumbs">Inventario / Traslados</div></div>
+      <label class="tb-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr-only">Buscar producto</span><input type="search" placeholder="Buscar producto por código o nombre…"></label>
+      <div class="tb-sede" id="tb-sede">Sede: Laureles</div>
+      <div class="tb-user"><span class="avatar" id="tb-avatar" aria-hidden="true">LM</span><span class="u-meta"><span class="u-name" id="tb-name">Laura Méndez</span><span class="u-role" id="tb-role">Bodeguera · Laureles</span></span></div>
+    </header>
+
+    <main class="content" id="content" tabindex="-1">
+
+      <!-- ================= 1. LISTA ================= -->
+      <section data-show="lista:*" aria-labelledby="h-lista">
+        <div class="page-head">
+          <div><h2 id="h-lista">Traslados</h2><p>Envía mercancía a otra sede y confirma la que llega a la tuya.</p></div>
+          <div class="actions"><a class="btn btn-primary" href="#pantalla=nuevo&amp;estado=normal">+ Nuevo traslado</a></div>
+        </div>
+        <div class="card">
+          <div class="tabs" role="tablist" aria-label="Tipo de traslado" data-show="lista:normal lista:vacio lista:carga lista:error">
+            <a class="tab" role="tab" aria-selected="true" href="#pantalla=lista&amp;estado=normal">Enviados</a>
+            <a class="tab" role="tab" aria-selected="false" href="#pantalla=lista&amp;estado=por-recibir">Por recibir <span class="count">2</span></a>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Tipo de traslado" data-show="lista:por-recibir">
+            <a class="tab" role="tab" aria-selected="false" href="#pantalla=lista&amp;estado=normal">Enviados</a>
+            <a class="tab" role="tab" aria-selected="true" href="#pantalla=lista&amp;estado=por-recibir">Por recibir <span class="count">2</span></a>
+          </div>
+
+          <!-- Normal: enviados -->
+          <div class="table-wrap" data-show="lista:normal">
+            <table class="table">
+              <caption class="sr-only">Traslados enviados desde Laureles</caption>
+              <thead><tr><th>N.°</th><th>Fecha</th><th>Origen</th><th>Destino</th><th class="num">Productos</th><th class="num">Unidades</th><th>Estado</th><th>En tránsito</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+              <tbody>
+                <tr><td class="strong">TRA-LAU-000137</td><td>20/11/2026 16:40</td><td>Laureles</td><td>Envigado</td><td class="num">2</td><td class="num">30</td><td><span class="badge badge-info">En tránsito</span></td><td><span class="badge badge-warning">52 h · más de 48 h</span></td><td><a href="#pantalla=en-transito&amp;estado=normal">Ver</a></td></tr>
+                <tr><td class="strong">TRA-LAU-000136</td><td>21/11/2026 11:05</td><td>Laureles</td><td>Centro</td><td class="num">4</td><td class="num">85</td><td><span class="badge badge-info">En tránsito</span></td><td>23 h</td><td><a href="#pantalla=en-transito&amp;estado=normal">Ver</a></td></tr>
+                <tr><td class="strong">TRA-LAU-000135</td><td>19/11/2026 08:30</td><td>Laureles</td><td>Bello</td><td class="num">2</td><td class="num">40</td><td><span class="badge badge-warning">Recibido con diferencias</span></td><td>—</td><td><a href="#pantalla=recibido&amp;estado=recibido-diferencias">Ver</a></td></tr>
+                <tr><td class="strong">TRA-LAU-000134</td><td>18/11/2026 15:20</td><td>Laureles</td><td>Poblado</td><td class="num">3</td><td class="num">56</td><td><span class="badge badge-success">Recibido</span></td><td>—</td><td><a href="#pantalla=recibido&amp;estado=recibido">Ver</a></td></tr>
+                <tr><td class="strong">TRA-LAU-000133</td><td>17/11/2026 10:10</td><td>Laureles</td><td>Centro</td><td class="num">1</td><td class="num">12</td><td><span class="badge badge-danger">Anulado</span></td><td>—</td><td><a href="#pantalla=en-transito&amp;estado=anulado">Ver</a></td></tr>
+                <tr><td class="strong">TRA-LAU-000132</td><td>16/11/2026 09:00</td><td>Laureles</td><td>Envigado</td><td class="num">2</td><td class="num">18</td><td><span class="badge badge-neutral">Borrador</span></td><td>—</td><td><a href="#pantalla=nuevo&amp;estado=normal">Continuar</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Por recibir -->
+          <div class="table-wrap" data-show="lista:por-recibir">
+            <table class="table">
+              <caption class="sr-only">Traslados en tránsito hacia Laureles</caption>
+              <thead><tr><th>N.°</th><th>Despachado</th><th>Origen</th><th>Destino</th><th class="num">Productos</th><th class="num">Unidades</th><th>Estado</th><th>En tránsito</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+              <tbody>
+                <tr><td class="strong">TRA-BOD-000921</td><td>22/11/2026 07:45</td><td>Bodega central</td><td>Laureles</td><td class="num">5</td><td class="num">210</td><td><span class="badge badge-info">En tránsito</span></td><td>3 h</td><td><a class="btn btn-secondary btn-sm" href="#pantalla=recepcion&amp;estado=completa">Recibir</a></td></tr>
+                <tr><td class="strong">TRA-POB-000088</td><td>20/11/2026 14:10</td><td>Poblado</td><td>Laureles</td><td class="num">1</td><td class="num">12</td><td><span class="badge badge-info">En tránsito</span></td><td><span class="badge badge-warning">50 h · más de 48 h</span></td><td><a class="btn btn-secondary btn-sm" href="#pantalla=recepcion&amp;estado=completa">Recibir</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Vacío -->
+          <div class="empty-state" data-show="lista:vacio">
+            <div class="empty-ico" aria-hidden="true">⇄</div>
+            <h4>Aún no hay traslados en esta sede</h4>
+            <p>Cuando envíes mercancía a otra sede, aquí verás su estado y quién la recibió.</p>
+            <a class="btn btn-primary" href="#pantalla=nuevo&amp;estado=normal">+ Crear el primer traslado</a>
+          </div>
+          <!-- Carga -->
+          <div class="table-wrap" data-show="lista:carga" aria-busy="true">
+            <span class="sr-only">Cargando traslados…</span>
+            <table class="table" aria-hidden="true">
+              <thead><tr><th>N.°</th><th>Fecha</th><th>Origen</th><th>Destino</th><th>Productos</th><th>Unidades</th><th>Estado</th><th>En tránsito</th></tr></thead>
+              <tbody>
+                <tr><td><div class="skeleton" style="width:110px"></div></td><td><div class="skeleton" style="width:100px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:80px"></div></td><td><div class="skeleton" style="width:50px"></div></td></tr>
+                <tr><td><div class="skeleton" style="width:110px"></div></td><td><div class="skeleton" style="width:100px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:80px"></div></td><td><div class="skeleton" style="width:50px"></div></td></tr>
+                <tr><td><div class="skeleton" style="width:110px"></div></td><td><div class="skeleton" style="width:100px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:80px"></div></td><td><div class="skeleton" style="width:50px"></div></td></tr>
+                <tr><td><div class="skeleton" style="width:110px"></div></td><td><div class="skeleton" style="width:100px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:70px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:30px"></div></td><td><div class="skeleton" style="width:80px"></div></td><td><div class="skeleton" style="width:50px"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Error -->
+          <div class="card-body" data-show="lista:error">
+            <div class="alert-banner alert-danger" role="alert" style="margin:0">
+              <span class="alert-ico" aria-hidden="true">!</span>
+              <div><strong>No pudimos cargar los traslados</strong>Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, avisa al administrador.</div>
+              <a class="btn btn-secondary btn-sm" href="#pantalla=lista&amp;estado=normal">Reintentar</a>
+            </div>
+          </div>
+          <div class="card-foot" data-show="lista:normal lista:por-recibir"><span class="foot-info">Mostrando los traslados más recientes · ordenados por fecha</span></div>
+        </div>
+      </section>
+
+      <!-- ================= 2. NUEVO TRASLADO (+ 3. DESPACHAR) ================= -->
+      <section data-show="nuevo:* despachar:confirmar despachar:carga" aria-labelledby="h-nuevo">
+        <div class="page-head">
+          <div class="head-left">
+            <a class="back" href="#pantalla=lista&amp;estado=normal" aria-label="Volver a traslados">‹</a>
+            <div><h2 id="h-nuevo">Nuevo traslado</h2><p>Envía productos de tu sede a otra ubicación. El stock sale de tu sede al despachar.</p></div>
+          </div>
+        </div>
+
+        <div class="alert-banner alert-danger" role="alert" data-show="nuevo:error-stock">
+          <span class="alert-ico" aria-hidden="true">!</span>
+          <div><strong>No puedes despachar todavía</strong>Una cantidad supera el stock disponible en la sede origen. Corrígela para continuar.</div>
+        </div>
+        <div class="alert-banner alert-danger" role="alert" data-show="nuevo:error-destino">
+          <span class="alert-ico" aria-hidden="true">!</span>
+          <div><strong>Revisa la sede destino</strong>La sede destino debe ser distinta de la sede origen.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Datos del traslado <span class="badge badge-info">Borrador · TRA-LAU-000138</span></h3></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="field">
+                <label for="f-origen">Sede origen</label>
+                <input class="input" id="f-origen" value="Laureles" readonly aria-describedby="h-origen">
+                <span class="help" id="h-origen">Asignada a tu usuario</span>
+              </div>
+              <div class="field" data-show="nuevo:normal nuevo:vacio nuevo:error-stock nuevo:cancelar despachar:*">
+                <label for="f-destino">Sede destino <span class="req" aria-hidden="true">*</span></label>
+                <select class="input" id="f-destino" required>
+                  <option>Bodega central</option><option>Centro</option><option selected>Poblado</option><option>Envigado</option><option>Bello</option>
+                </select>
+                <span class="help">No incluye la sede origen</span>
+              </div>
+              <div class="field" data-show="nuevo:error-destino">
+                <label for="f-destino-err">Sede destino <span class="req" aria-hidden="true">*</span></label>
+                <select class="input is-error" id="f-destino-err" aria-invalid="true" aria-describedby="e-destino">
+                  <option selected>Laureles</option><option>Bodega central</option><option>Centro</option><option>Poblado</option><option>Envigado</option><option>Bello</option>
+                </select>
+                <span class="error-msg" id="e-destino" role="alert">La sede destino debe ser distinta de la sede origen.</span>
+              </div>
+              <div class="field">
+                <label for="f-fecha">Fecha</label>
+                <input class="input" id="f-fecha" value="22/11/2026 10:42 (automática)" disabled>
+              </div>
+              <div class="field">
+                <label for="f-obs">Observaciones (opcional)</label>
+                <input class="input" id="f-obs" value="Reposición por quiebre en Poblado">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Detalle de productos
+              <span class="card-sub" data-show="nuevo:normal nuevo:error-stock nuevo:error-destino nuevo:cancelar despachar:*">3 productos agregados</span>
+              <span class="card-sub" data-show="nuevo:vacio">Sin productos</span>
+            </h3>
+            <div class="search-row">
+              <label class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr-only">Agregar producto</span><input type="search" placeholder="Agregar producto (código o nombre)…"></label>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="sr-only">Productos a trasladar</caption>
+              <thead><tr><th>#</th><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Stock disponible en Laureles</th><th class="num">Cantidad a trasladar <span class="req" aria-hidden="true">*</span></th><th><span class="sr-only">Quitar</span></th></tr></thead>
+              <tbody data-show="nuevo:normal nuevo:error-destino nuevo:cancelar despachar:*">
+                <tr><td>1</td><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">51</td><td class="num"><label class="sr-only" for="q1">Cantidad Arroz Premium 1 kg</label><input class="input input-qty" id="q1" value="24" inputmode="numeric"></td><td><button type="button" class="icon-btn" aria-label="Quitar Arroz Premium 1 kg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+                <tr><td>2</td><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">30</td><td class="num"><label class="sr-only" for="q2">Cantidad Café molido 500 g</label><input class="input input-qty" id="q2" value="10" inputmode="numeric"></td><td><button type="button" class="icon-btn" aria-label="Quitar Café molido 500 g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+                <tr><td>3</td><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num">26</td><td class="num"><label class="sr-only" for="q3">Cantidad Aceite vegetal 3 L</label><input class="input input-qty" id="q3" value="12" inputmode="numeric"></td><td><button type="button" class="icon-btn" aria-label="Quitar Aceite vegetal 3 L"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+              </tbody>
+              <tbody data-show="nuevo:error-stock">
+                <tr><td>1</td><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">51</td><td class="num"><label class="sr-only" for="q1e">Cantidad Arroz Premium 1 kg</label><input class="input input-qty" id="q1e" value="24" inputmode="numeric"></td><td><button type="button" class="icon-btn" aria-label="Quitar Arroz Premium 1 kg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+                <tr><td>2</td><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">30</td><td class="num"><label class="sr-only" for="q2e">Cantidad Café molido 500 g</label><input class="input input-qty" id="q2e" value="10" inputmode="numeric"></td><td><button type="button" class="icon-btn" aria-label="Quitar Café molido 500 g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+                <tr><td>3</td><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num cell-err">26</td><td class="num"><label class="sr-only" for="q3e">Cantidad Aceite vegetal 3 L</label><input class="input input-qty is-error" id="q3e" value="40" inputmode="numeric" aria-invalid="true" aria-describedby="e-q3"><div class="error-msg" id="e-q3" role="alert">Stock disponible en Laureles: 26</div></td><td><button type="button" class="icon-btn" aria-label="Quitar Aceite vegetal 3 L"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></td></tr>
+              </tbody>
+              <tbody data-show="nuevo:vacio">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-ico" aria-hidden="true">+</div><h4>Agrega al menos un producto</h4><p>Busca por código o nombre, o usa el lector de código de barras.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-foot">
+            <span class="foot-info" data-show="nuevo:normal nuevo:error-destino nuevo:cancelar despachar:*"><span class="foot-total">46 unidades</span> · 3 productos</span>
+            <span class="foot-info" data-show="nuevo:error-stock"><span class="foot-total">74 unidades</span> · 3 productos</span>
+            <span class="foot-info" data-show="nuevo:vacio"><span class="foot-total">0 unidades</span> · Despachar se habilita con al menos un producto</span>
+            <a class="btn btn-ghost" href="#pantalla=nuevo&amp;estado=cancelar">Cancelar</a>
+            <a class="btn btn-secondary" href="#pantalla=lista&amp;estado=normal">Guardar borrador</a>
+            <a class="btn btn-primary" href="#pantalla=despachar&amp;estado=confirmar" data-show="nuevo:normal nuevo:cancelar despachar:*">Despachar</a>
+            <button type="button" class="btn btn-primary" disabled data-show="nuevo:vacio nuevo:error-stock nuevo:error-destino">Despachar</button>
+          </div>
+        </div>
+
+        <!-- Modal: cancelar borrador (A3) -->
+        <div class="modal-overlay" data-show="nuevo:cancelar" data-close="#pantalla=nuevo&amp;estado=normal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-cancel-t">
+            <div class="modal-head"><h3 id="m-cancel-t">¿Descartar el borrador?</h3></div>
+            <div class="modal-body"><p>El borrador <strong>TRA-LAU-000138</strong> se descartará. No se modificará el stock de ninguna sede.</p></div>
+            <div class="modal-foot">
+              <a class="btn btn-secondary" href="#pantalla=nuevo&amp;estado=normal">Seguir editando</a>
+              <a class="btn btn-danger" href="#pantalla=lista&amp;estado=normal">Descartar borrador</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: confirmar despacho -->
+        <div class="modal-overlay" data-show="despachar:confirmar" data-close="#pantalla=nuevo&amp;estado=normal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-desp-t">
+            <div class="modal-head"><h3 id="m-desp-t">¿Despachar el traslado TRA-LAU-000138?</h3></div>
+            <div class="modal-body">
+              <div class="alert-banner alert-info"><span class="alert-ico" aria-hidden="true">i</span><div>El stock saldrá de <strong style="display:inline">Laureles</strong> y quedará <strong style="display:inline">en tránsito</strong> hacia Poblado hasta que la sede destino confirme la recepción.</div></div>
+              <dl class="kv">
+                <dt>Origen</dt><dd>Laureles</dd>
+                <dt>Destino</dt><dd>Poblado</dd>
+                <dt>Productos</dt><dd>3</dd>
+                <dt>Unidades</dt><dd>46</dd>
+              </dl>
+              <p class="help" style="margin-top:12px">Después de despachar solo podrás anular el traslado, con motivo, mientras siga en tránsito.</p>
+            </div>
+            <div class="modal-foot">
+              <a class="btn btn-secondary" href="#pantalla=nuevo&amp;estado=normal">Volver</a>
+              <a class="btn btn-primary" href="#pantalla=despachar&amp;estado=carga">Despachar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: despachando (carga) -->
+        <div class="modal-overlay" data-show="despachar:carga">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-load-t" aria-busy="true">
+            <div class="modal-center">
+              <span class="spinner spinner-lg" aria-hidden="true"></span>
+              <h3 id="m-load-t" style="margin:14px 0 0">Despachando traslado…</h3>
+              <p>Descontando el stock de Laureles y registrando el kardex y el log.</p>
+              <a class="mock-next" href="#pantalla=despachar&amp;estado=exito">Continuar (simulación del mockup) →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. EN TRÁNSITO ================= -->
+      <section data-show="en-transito:* despachar:exito" aria-labelledby="h-trans">
+        <div class="page-head">
+          <div class="head-left">
+            <a class="back" href="#pantalla=lista&amp;estado=normal" aria-label="Volver a traslados">‹</a>
+            <div>
+              <h2 id="h-trans">Traslado TRA-LAU-000138
+                <span class="badge badge-info" data-show="en-transito:normal en-transito:anular en-transito:anular-error despachar:exito">En tránsito</span>
+                <span class="badge badge-danger" data-show="en-transito:anulado">Anulado</span>
+              </h2>
+              <p>Laureles → Poblado · 3 productos · 46 unidades</p>
+            </div>
+          </div>
+          <div class="actions" data-show="en-transito:normal en-transito:anular en-transito:anular-error despachar:exito">
+            <a class="btn btn-danger" href="#pantalla=en-transito&amp;estado=anular">Anular traslado</a>
+          </div>
+        </div>
+
+        <div class="alert-banner alert-info" data-show="en-transito:normal en-transito:anular en-transito:anular-error despachar:exito">
+          <span class="alert-ico" aria-hidden="true">i</span>
+          <div><strong>Poblado ya fue notificada</strong>El stock está en tránsito: no cuenta en Laureles ni en Poblado hasta que la sede destino confirme la recepción.</div>
+        </div>
+        <div class="alert-banner alert-neutral" data-show="en-transito:anulado">
+          <span class="alert-ico" aria-hidden="true">×</span>
+          <div><strong>Traslado anulado por Laura Méndez el 22/11/2026 11:20</strong>Motivo: «Poblado recibió reposición directa desde la bodega central». El stock volvió a Laureles con el movimiento inverso MOV-LAU-004518.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Seguimiento</h3></div>
+          <div class="card-body">
+            <ol class="timeline">
+              <li class="tl-step done"><span class="tl-dot" aria-hidden="true">✓</span><div class="tl-label">Creado</div><div class="tl-meta">Laura Méndez · 22/11/2026 10:42</div></li>
+              <li class="tl-step done"><span class="tl-dot" aria-hidden="true">✓</span><div class="tl-label">Despachado</div><div class="tl-meta">Laura Méndez · Laureles · 22/11/2026 10:45</div></li>
+              <li class="tl-step current" data-show="en-transito:normal en-transito:anular en-transito:anular-error despachar:exito"><span class="tl-dot" aria-hidden="true">…</span><div class="tl-label">Recibido</div><div class="tl-meta">Pendiente · sede Poblado</div></li>
+              <li class="tl-step cancel" data-show="en-transito:anulado"><span class="tl-dot" aria-hidden="true">×</span><div class="tl-label">Anulado</div><div class="tl-meta">Laura Méndez · 22/11/2026 11:20</div></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Productos despachados</h3></div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="sr-only">Productos del traslado TRA-LAU-000138</caption>
+              <thead><tr><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Despachado</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">24</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">10</td></tr>
+                <tr><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num">12</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-foot"><span class="foot-info"><span class="foot-total">46 unidades</span> · Kardex: MOV-LAU-004512 (salida a tránsito)</span></div>
+        </div>
+
+        <!-- Modal: anular (A2/A4) -->
+        <div class="modal-overlay" data-show="en-transito:anular en-transito:anular-error" data-close="#pantalla=en-transito&amp;estado=normal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-anular-t">
+            <div class="modal-head"><h3 id="m-anular-t">Anular traslado TRA-LAU-000138</h3></div>
+            <div class="modal-body">
+              <div class="alert-banner alert-warning"><span class="alert-ico" aria-hidden="true">!</span><div>El stock volverá a Laureles con un movimiento inverso y el traslado quedará «Anulado». Esta acción no se puede deshacer.</div></div>
+              <div class="field" data-show="en-transito:anular">
+                <label for="f-motivo">Motivo de anulación <span class="req" aria-hidden="true">*</span></label>
+                <textarea class="input" id="f-motivo" required placeholder="Explica por qué se anula el traslado"></textarea>
+                <span class="help">Obligatorio. Quedará en el log de auditoría.</span>
+              </div>
+              <div class="field" data-show="en-transito:anular-error">
+                <label for="f-motivo-e">Motivo de anulación <span class="req" aria-hidden="true">*</span></label>
+                <textarea class="input is-error" id="f-motivo-e" aria-invalid="true" aria-describedby="e-motivo"></textarea>
+                <span class="error-msg" id="e-motivo" role="alert">Escribe el motivo: es obligatorio para anular.</span>
+              </div>
+            </div>
+            <div class="modal-foot">
+              <a class="btn btn-secondary" href="#pantalla=en-transito&amp;estado=normal">Volver</a>
+              <a class="btn btn-danger" href="#pantalla=en-transito&amp;estado=anulado">Anular traslado</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast" role="status" data-show="despachar:exito"><span class="t-ok" aria-hidden="true">✓</span><span>TRA-LAU-000138 despachado · en tránsito hacia Poblado</span></div>
+      </section>
+
+      <!-- ================= 5. RECEPCIÓN ================= -->
+      <section data-show="recepcion:completa recepcion:diferencias recepcion:error-mayor" aria-labelledby="h-rec">
+        <div class="page-head">
+          <div class="head-left">
+            <a class="back" href="#pantalla=lista&amp;estado=por-recibir" aria-label="Volver a traslados por recibir">‹</a>
+            <div>
+              <h2 id="h-rec">Recibir traslado TRA-LAU-000138 <span class="badge badge-info">En tránsito</span></h2>
+              <p>Desde Laureles · despachado por Laura Méndez el 22/11/2026 10:45</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert-banner alert-info">
+          <span class="alert-ico" aria-hidden="true">i</span>
+          <div><strong>Traslado TRA-LAU-000138 en tránsito hacia tu sede</strong>Verifica físicamente la mercancía y registra la cantidad que realmente llegó.</div>
+        </div>
+        <div class="alert-banner alert-warning" role="status" data-show="recepcion:diferencias">
+          <span class="alert-ico" aria-hidden="true">!</span>
+          <div><strong>Hay diferencias con lo despachado</strong>El traslado quedará como «Recibido con diferencias», se sumará a Poblado solo lo recibido y se notificará al administrador.</div>
+        </div>
+        <div class="alert-banner alert-danger" role="alert" data-show="recepcion:error-mayor">
+          <span class="alert-ico" aria-hidden="true">!</span>
+          <div><strong>No puedes confirmar la recepción</strong>Una cantidad recibida supera lo despachado. Corrígela para continuar.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Mercancía recibida <span class="card-sub">3 productos</span></h3></div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="sr-only">Cantidades despachadas y recibidas</caption>
+              <thead><tr><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Despachado</th><th class="num">Recibido <span class="req" aria-hidden="true">*</span></th><th class="num">Diferencia</th></tr></thead>
+              <tbody data-show="recepcion:completa">
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">24</td><td class="num"><label class="sr-only" for="r1">Recibido Arroz</label><input class="input input-qty" id="r1" value="24" inputmode="numeric"></td><td class="num">0</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">10</td><td class="num"><label class="sr-only" for="r2">Recibido Café</label><input class="input input-qty" id="r2" value="10" inputmode="numeric"></td><td class="num">0</td></tr>
+                <tr><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num">12</td><td class="num"><label class="sr-only" for="r3">Recibido Aceite</label><input class="input input-qty" id="r3" value="12" inputmode="numeric"></td><td class="num">0</td></tr>
+              </tbody>
+              <tbody data-show="recepcion:diferencias">
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">24</td><td class="num"><label class="sr-only" for="r1d">Recibido Arroz</label><input class="input input-qty" id="r1d" value="24" inputmode="numeric"></td><td class="num">0</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">10</td><td class="num"><label class="sr-only" for="r2d">Recibido Café</label><input class="input input-qty" id="r2d" value="10" inputmode="numeric"></td><td class="num">0</td></tr>
+                <tr class="row-warn"><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num">12</td><td class="num"><label class="sr-only" for="r3d">Recibido Aceite</label><input class="input input-qty" id="r3d" value="10" inputmode="numeric"></td><td class="num cell-warn">−2</td></tr>
+              </tbody>
+              <tbody data-show="recepcion:error-mayor">
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td>Und</td><td class="num">24</td><td class="num"><label class="sr-only" for="r1x">Recibido Arroz</label><input class="input input-qty is-error" id="r1x" value="30" inputmode="numeric" aria-invalid="true" aria-describedby="e-r1x"><div class="error-msg" id="e-r1x" role="alert">Máximo permitido: 24</div></td><td class="num">—</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td>Und</td><td class="num">10</td><td class="num"><label class="sr-only" for="r2x">Recibido Café</label><input class="input input-qty" id="r2x" value="10" inputmode="numeric"></td><td class="num">0</td></tr>
+                <tr><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td>Und</td><td class="num">12</td><td class="num"><label class="sr-only" for="r3x">Recibido Aceite</label><input class="input input-qty" id="r3x" value="12" inputmode="numeric"></td><td class="num">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-body" data-show="recepcion:diferencias" style="border-top:1px solid var(--border)">
+            <div class="field" style="max-width:640px">
+              <label for="f-mot-dif">Motivo de la diferencia <span class="req" aria-hidden="true">*</span></label>
+              <textarea class="input" id="f-mot-dif" required>Faltan 2 unidades de aceite; la caja llegó abierta.</textarea>
+              <span class="help">Obligatorio cuando lo recibido difiere de lo despachado.</span>
+            </div>
+          </div>
+          <div class="card-foot">
+            <span class="foot-info" data-show="recepcion:completa">Despachado <span class="foot-total">46</span> · Recibido <span class="foot-total">46</span></span>
+            <span class="foot-info" data-show="recepcion:diferencias">Despachado <span class="foot-total">46</span> · Recibido <span class="foot-total">44</span></span>
+            <span class="foot-info" data-show="recepcion:error-mayor">Despachado <span class="foot-total">46</span> · Recibido <span class="foot-total">52</span></span>
+            <a class="btn btn-ghost" href="#pantalla=lista&amp;estado=por-recibir">Volver</a>
+            <a class="btn btn-primary" href="#pantalla=recibido&amp;estado=recibido" data-show="recepcion:completa">Confirmar recepción</a>
+            <a class="btn btn-primary" href="#pantalla=recibido&amp;estado=recibido-diferencias" data-show="recepcion:diferencias">Confirmar recepción con diferencias</a>
+            <button type="button" class="btn btn-primary" disabled data-show="recepcion:error-mayor">Confirmar recepción</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recepción: usuario de otra sede (E4 / CA4) -->
+      <section data-show="recepcion:otra-sede" aria-labelledby="h-otra">
+        <div class="blocked" role="alert">
+          <div class="result-ico bad" aria-hidden="true">!</div>
+          <h2 id="h-otra">No puedes recibir este traslado</h2>
+          <p>Solo un usuario de la sede destino (<strong>Poblado</strong>) puede recibir TRA-LAU-000138. Tu usuario está asignado a Centro.</p>
+          <p class="help">El intento quedó registrado en el log de auditoría · 22/11/2026 15:12</p>
+          <a class="btn btn-secondary" href="#pantalla=lista&amp;estado=normal" style="margin-top:10px">Volver a traslados</a>
+        </div>
+      </section>
+
+      <!-- ================= 6. RECIBIDO ================= -->
+      <section data-show="recibido:*" aria-labelledby="h-recib">
+        <div class="page-head">
+          <div class="head-left">
+            <a class="back" href="#pantalla=lista&amp;estado=por-recibir" aria-label="Volver a traslados">‹</a>
+            <div>
+              <h2 id="h-recib">Traslado TRA-LAU-000138
+                <span class="badge badge-success" data-show="recibido:recibido">Recibido</span>
+                <span class="badge badge-warning" data-show="recibido:recibido-diferencias">Recibido con diferencias</span>
+              </h2>
+              <p>Laureles → Poblado</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="result" data-show="recibido:recibido">
+            <div class="result-ico ok" aria-hidden="true">✓</div>
+            <div><h3>Traslado recibido</h3><p>Se sumaron 46 unidades al stock de Poblado. El movimiento quedó en el kardex de origen y de destino.</p></div>
+          </div>
+          <div class="result" data-show="recibido:recibido-diferencias">
+            <div class="result-ico warn" aria-hidden="true">!</div>
+            <div><h3>Recepción registrada con diferencias</h3><p>Se sumaron 44 de 46 unidades a Poblado. Notificado a Diana Montoya (administrador) · 22/11/2026 15:30.</p></div>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-head"><h3>Seguimiento</h3></div>
+            <div class="card-body">
+              <ol class="timeline">
+                <li class="tl-step done"><span class="tl-dot" aria-hidden="true">✓</span><div class="tl-label">Creado</div><div class="tl-meta">Laura Méndez · 22/11 10:42</div></li>
+                <li class="tl-step done"><span class="tl-dot" aria-hidden="true">✓</span><div class="tl-label">Despachado</div><div class="tl-meta">Laura Méndez · Laureles · 22/11 10:45</div></li>
+                <li class="tl-step done" data-show="recibido:recibido"><span class="tl-dot" aria-hidden="true">✓</span><div class="tl-label">Recibido</div><div class="tl-meta">Marta Gil · Poblado · 22/11 15:30</div></li>
+                <li class="tl-step warn" data-show="recibido:recibido-diferencias"><span class="tl-dot" aria-hidden="true">!</span><div class="tl-label">Recibido con diferencias</div><div class="tl-meta">Marta Gil · Poblado · 22/11 15:30</div></li>
+              </ol>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Trazabilidad</h3></div>
+            <div class="card-body">
+              <dl class="kv">
+                <dt>Despachó</dt><dd>Laura Méndez · Bodeguera · Laureles</dd>
+                <dt>Recibió</dt><dd>Marta Gil · Bodeguera · Poblado</dd>
+                <dt>Tiempo en tránsito</dt><dd>4 h 45 min</dd>
+                <dt>Kardex</dt><dd>MOV-LAU-004512 (salida) · MOV-POB-002871 (entrada)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Detalle</h3></div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="sr-only">Detalle de la recepción</caption>
+              <thead><tr><th>Código</th><th>Producto</th><th class="num">Despachado</th><th class="num">Recibido</th><th class="num">Diferencia</th></tr></thead>
+              <tbody data-show="recibido:recibido">
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td class="num">24</td><td class="num">24</td><td class="num">0</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td class="num">10</td><td class="num">10</td><td class="num">0</td></tr>
+                <tr><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td class="num">12</td><td class="num">12</td><td class="num">0</td></tr>
+              </tbody>
+              <tbody data-show="recibido:recibido-diferencias">
+                <tr><td class="mono">P-00124</td><td class="strong">Arroz Premium 1 kg</td><td class="num">24</td><td class="num">24</td><td class="num">0</td></tr>
+                <tr><td class="mono">P-02210</td><td class="strong">Café molido 500 g</td><td class="num">10</td><td class="num">10</td><td class="num">0</td></tr>
+                <tr class="row-warn"><td class="mono">P-00311</td><td class="strong">Aceite vegetal 3 L</td><td class="num">12</td><td class="num">10</td><td class="num cell-warn">−2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-foot" data-show="recibido:recibido-diferencias"><span class="foot-info">Motivo registrado: «Faltan 2 unidades de aceite; la caja llegó abierta.»</span></div>
+        </div>
+
+        <div class="toast" role="status" data-show="recibido:recibido"><span class="t-ok" aria-hidden="true">✓</span><span>Recepción confirmada · stock sumado a Poblado</span></div>
+        <div class="toast" role="status" data-show="recibido:recibido-diferencias"><span class="t-warn" aria-hidden="true">!</span><span>Recepción con diferencias · administrador notificado</span></div>
+      </section>
+
+      <!-- ================= 7. ACCESO ================= -->
+      <section data-show="acceso:ip-no-autorizada" aria-labelledby="h-ip">
+        <div class="blocked" role="alert">
+          <div class="brand-row"><span class="brand-logo" aria-hidden="true">SI</span>Stock Central</div>
+          <div class="result-ico bad" aria-hidden="true">!</div>
+          <h2 id="h-ip">Acceso bloqueado: esta red no está autorizada</h2>
+          <p>StockCentral solo puede usarse desde las redes registradas de las sedes. IP detectada: <strong>181.52.10.4</strong>.</p>
+          <p class="help">El intento quedó registrado en el log de auditoría · 22/11/2026 10:40. Si estás en una sede, contacta al administrador.</p>
+        </div>
+      </section>
+      <section data-show="acceso:sin-permiso" aria-labelledby="h-perm">
+        <div class="blocked" role="alert">
+          <div class="result-ico bad" aria-hidden="true">!</div>
+          <h2 id="h-perm">No tienes permiso para crear traslados</h2>
+          <p>Tu rol (Contador) no tiene permiso de creación en inventario.</p>
+          <p class="help">El intento quedó registrado en el log de auditoría · 22/11/2026 10:41</p>
+          <a class="btn btn-secondary" href="0004-dashboard-stock-consolidado.html" style="margin-top:10px">Ir al dashboard</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== Panel «Notas del mockup» (no forma parte del producto) ===== -->
+<aside class="notes" id="notes" aria-labelledby="notes-title">
+  <div class="notes-head"><h2 id="notes-title">Notas del mockup 0002</h2><button type="button" id="notes-close">Cerrar</button></div>
+  <div class="notes-body">
+    <h3>1. Objetivo y pantalla</h3>
+    <p><strong>Objetivo:</strong> validar con el responsable cómo se crea, despacha, sigue y recibe un traslado entre sedes, dejando visible quién despachó, quién recibió y cuándo.</p>
+    <ul>
+      <li><strong>Roles:</strong> bodeguero de la sede origen (Laura Méndez · Laureles), bodeguero de la sede destino (Marta Gil · Poblado), jefe de sede y administrador (recibe la notificación de diferencias).</li>
+      <li><strong>Trazabilidad:</strong> CU.0003 · HU-04.4 (despachar) · HU-04.5 (recibir) · Épica EP04 · Problema 2 (traslados pedidos por mensajes, sin trazabilidad).</li>
+      <li><strong>Spec:</strong> <a href="../03-specs/0002-trasladar-mercancia-entre-sedes.md">SPEC-0002</a> (reglas, contratos y criterios de aceptación).</li>
+      <li><strong>Fidelidad:</strong> media-alta. Se derivó del CU y las HU con el sistema visual del prototipo Figma; no había prototipo Figma previo de esta pantalla.</li>
+    </ul>
+
+    <h3>2. Flujo / navegación</h3>
+    <div class="flow">
+      <a class="node" href="#pantalla=lista&amp;estado=normal">Lista</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=nuevo&amp;estado=normal">Nuevo traslado</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=despachar&amp;estado=confirmar">Confirmar despacho</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=despachar&amp;estado=carga">Despachando</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=en-transito&amp;estado=normal">En tránsito</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=recepcion&amp;estado=completa">Recepción (destino)</a><span class="arr">→</span>
+      <a class="node" href="#pantalla=recibido&amp;estado=recibido">Recibido</a>
+    </div>
+    <ul>
+      <li>Recepción con faltantes → <a href="#pantalla=recibido&amp;estado=recibido-diferencias">Recibido con diferencias</a> (notifica al administrador).</li>
+      <li>En tránsito → <a href="#pantalla=en-transito&amp;estado=anular">Anular</a> (motivo obligatorio) → <a href="#pantalla=en-transito&amp;estado=anulado">Anulado</a>.</li>
+      <li>Nuevo → <a href="#pantalla=nuevo&amp;estado=cancelar">Cancelar</a> → Lista (sin cambios de stock).</li>
+      <li>Desde el dashboard, la acción «Trasladar» abre <a href="#pantalla=nuevo&amp;estado=normal">Nuevo traslado</a>.</li>
+    </ul>
+
+    <h3>3. Estados</h3>
+    <table><thead><tr><th>Pantalla</th><th>Estado</th><th>Cuándo ocurre</th><th>Ver</th></tr></thead><tbody id="notes-states"></tbody></table>
+
+    <h3>4. Componentes reutilizados</h3>
+    <ul>
+      <li>Shell: sidebar por módulos con IP autorizada en el pie, topbar con sede y usuario.</li>
+      <li><code>.card</code>, <code>.table</code>, <code>.badge</code> (Borrador = neutral, En tránsito = info, Recibido = success, Recibido con diferencias = warning, Anulado = danger).</li>
+      <li><code>.field</code>, <code>.input.is-error</code>, <code>.btn</code> (primary, secondary, ghost, danger), <code>.tabs</code>, <code>.timeline</code>.</li>
+      <li><code>.modal</code>, <code>.toast</code>, <code>.alert-banner</code>, <code>.empty-state</code>, <code>.skeleton</code>, <code>.spinner</code>, bloque de acceso denegado.</li>
+    </ul>
+
+    <h3>5. Responsive</h3>
+    <ul>
+      <li>≥ 1280 px: diseño completo (referencia 1440 × 900).</li>
+      <li>768-1279 px: sidebar colapsada a iconos (64 px); tablas con scroll horizontal; formulario a 2 columnas.</li>
+      <li>&lt; 768 px: sidebar como drawer (botón hamburguesa); formulario a 1 columna; timeline vertical; botones del pie a ancho completo; sin scroll horizontal de página.</li>
+    </ul>
+
+    <h3>6. Notas de interacción</h3>
+    <ul>
+      <li>El consecutivo y la fecha los asigna el sistema; la sede origen viene bloqueada según el usuario.</li>
+      <li>El selector de destino no ofrece la sede origen.</li>
+      <li>El stock disponible se muestra junto a cada producto; si la cantidad lo supera, el error aparece junto al campo y «Despachar» se deshabilita.</li>
+      <li>«Despachar» pide confirmación porque el stock sale del origen y queda en tránsito.</li>
+      <li>La sede destino recibe aviso del traslado y lo ve en la pestaña «Por recibir».</li>
+      <li>En la recepción la diferencia se muestra en vivo; el campo «Motivo» solo aparece, y es obligatorio, cuando hay diferencia.</li>
+      <li>Los traslados con más de 48 h en tránsito se resaltan en ámbar.</li>
+      <li>El lector de código de barras puede agregar productos desde el buscador.</li>
+    </ul>
+    <p><strong>Accesibilidad:</strong> contraste AA en texto y badges; foco visible de 2 px; cada campo tiene su label (los de tabla, ocultos para lectores de pantalla); los errores usan <code>role="alert"</code> y los avisos <code>aria-live</code>; los modales reciben el foco, lo mantienen dentro y se cierran con Escape; el estado nunca depende solo del color (los badges llevan texto).</p>
+    <p><strong>Antes / después:</strong> no aplica, es una pantalla nueva.</p>
+
+    <h3>7. Aprobación del responsable</h3>
+    <table>
+      <tbody>
+        <tr><th>Responsable</th><td>Product Owner: administrador general de la empresa cliente</td></tr>
+        <tr><th>Estado</th><td><strong>Pendiente de aprobación</strong></td></tr>
+        <tr><th>Fecha</th><td>—</td></tr>
+        <tr><th>Observaciones</th><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</aside>
+
+<script>
+window.MOCK = {
+  id: '0002',
+  screens: {
+    'lista': { label: '1 · Lista de traslados', title: 'Traslados', crumbs: 'Inventario / Traslados', states: [
+      ['normal', 'Normal (enviados)', 'La sede tiene traslados enviados'],
+      ['por-recibir', 'Pestaña «Por recibir»', 'Hay traslados en tránsito hacia la sede del usuario'],
+      ['vacio', 'Vacío', 'La sede aún no ha creado traslados'],
+      ['carga', 'Carga', 'Mientras se consulta la lista'],
+      ['error', 'Error', 'Falla la consulta de la lista']
+    ]},
+    'nuevo': { label: '2 · Nuevo traslado', title: 'Nuevo traslado', crumbs: 'Inventario / Traslados / Nuevo', states: [
+      ['normal', 'Normal', 'Borrador con 3 productos válidos'],
+      ['vacio', 'Vacío', 'Borrador sin productos: no se puede despachar'],
+      ['error-stock', 'Error · stock insuficiente', 'La cantidad supera el stock disponible en el origen (E3)'],
+      ['error-destino', 'Error · destino igual al origen', 'La sede destino es la misma sede origen (restricción del CU)'],
+      ['cancelar', 'Cancelar borrador', 'El usuario cancela antes de despachar (A3)']
+    ]},
+    'despachar': { label: '3 · Despachar', title: 'Nuevo traslado', crumbs: 'Inventario / Traslados / Nuevo', states: [
+      ['confirmar', 'Confirmación', 'Clic en «Despachar»'],
+      ['carga', 'Carga', 'Mientras se descuenta el stock y se registran el kardex y el log'],
+      ['exito', 'Éxito', 'Traslado despachado; queda en tránsito']
+    ]},
+    'en-transito': { label: '4 · Traslado en tránsito', title: 'Traslado TRA-LAU-000138', crumbs: 'Inventario / Traslados / TRA-LAU-000138', states: [
+      ['normal', 'Normal', 'Traslado despachado, pendiente de recepción'],
+      ['anular', 'Anular', 'El usuario anula el traslado en tránsito (A2/A4)'],
+      ['anular-error', 'Anular · sin motivo', 'Intenta anular sin escribir el motivo'],
+      ['anulado', 'Anulado', 'Traslado anulado; el stock volvió al origen']
+    ]},
+    'recepcion': { label: '5 · Recepción en destino', title: 'Recibir traslado', crumbs: 'Inventario / Traslados / Por recibir', states: [
+      ['completa', 'Recepción completa', 'Lo recibido coincide con lo despachado (CA1)'],
+      ['diferencias', 'Con diferencias', 'Llega menos de lo despachado (A1 / CA2)'],
+      ['error-mayor', 'Error · mayor a lo despachado', 'La cantidad recibida supera la despachada (E5 / CA3)'],
+      ['otra-sede', 'Usuario de otra sede', 'Un usuario que no es de la sede destino intenta recibir (E4 / CA4)']
+    ]},
+    'recibido': { label: '6 · Recibido', title: 'Traslado TRA-LAU-000138', crumbs: 'Inventario / Traslados / TRA-LAU-000138', states: [
+      ['recibido', 'Recibido', 'Recepción completa confirmada'],
+      ['recibido-diferencias', 'Recibido con diferencias', 'Recepción con faltantes; administrador notificado']
+    ]},
+    'acceso': { label: '7 · Acceso denegado', title: 'Acceso denegado', crumbs: '', bare: ['ip-no-autorizada'], states: [
+      ['ip-no-autorizada', 'IP no autorizada', 'Acceso desde una red no registrada (E1)'],
+      ['sin-permiso', 'Sin permiso', 'El rol no tiene permiso de creación en inventario (E2)']
+    ]}
+  },
+  users: {
+    'default': { ini: 'LM', name: 'Laura Méndez', role: 'Bodeguera · Laureles', sede: 'Sede: Laureles' },
+    'recepcion:*': { ini: 'MG', name: 'Marta Gil', role: 'Bodeguera · Poblado', sede: 'Sede: Poblado' },
+    'recepcion:otra-sede': { ini: 'JP', name: 'Jorge Pérez', role: 'Bodeguero · Centro', sede: 'Sede: Centro' },
+    'recibido:*': { ini: 'MG', name: 'Marta Gil', role: 'Bodeguera · Poblado', sede: 'Sede: Poblado' },
+    'acceso:sin-permiso': { ini: 'PT', name: 'Paula Torres', role: 'Contadora · Centro', sede: 'Sede: Centro' }
+  }
+};
+</script>
+<script id="engine">
+/* Motor de navegación del mockup: solo cambia de pantalla/estado (sin lógica de negocio). */
+(function () {
+  var C = window.MOCK;
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  var order = Object.keys(C.screens);
+  var screenSel = $('#mc-screen'), stateSel = $('#mc-state');
+  var notes = $('#notes'), notesBtn = $('#mc-notes'), chrome = $('#mock-chrome');
+
+  order.forEach(function (k) {
+    var o = document.createElement('option'); o.value = k; o.textContent = C.screens[k].label; screenSel.appendChild(o);
+  });
+
+  function link(s, st) { return '#pantalla=' + s + '&estado=' + st; }
+  function parse() {
+    var p = {};
+    location.hash.replace(/^#/, '').split('&').forEach(function (kv) {
+      var i = kv.indexOf('=');
+      if (i > 0) { p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1)); }
+    });
+    var s = C.screens[p.pantalla] ? p.pantalla : order[0];
+    var states = C.screens[s].states;
+    var st = states.some(function (x) { return x[0] === p.estado; }) ? p.estado : states[0][0];
+    return { s: s, st: st };
+  }
+  function matches(tokens, s, st) {
+    return tokens.some(function (t) {
+      var a = t.split(':');
+      return (a[0] === '*' || a[0] === s) && (a[1] === undefined || a[1] === '*' || a[1] === st);
+    });
+  }
+  function userFor(s, st) { return C.users[s + ':' + st] || C.users[s + ':*'] || C.users['default']; }
+  function stateLabel(s, st) {
+    var f = C.screens[s].states.filter(function (x) { return x[0] === st; })[0];
+    return f ? f[1] : st;
+  }
+  function visibleModal() {
+    return $$('.modal-overlay').filter(function (m) { return !m.closest('[hidden]'); })[0] || null;
+  }
+  function focusables(root) {
+    return $$('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])', root)
+      .filter(function (el) { return !el.closest('[hidden]'); });
+  }
+  function setNav(open) {
+    document.body.classList.toggle('nav-open', open);
+    $('#hamburger').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function render(fromUser) {
+    var r = parse(), s = r.s, st = r.st, sc = C.screens[s];
+    screenSel.value = s;
+    stateSel.innerHTML = '';
+    sc.states.forEach(function (x) {
+      var o = document.createElement('option'); o.value = x[0]; o.textContent = x[1]; stateSel.appendChild(o);
+    });
+    stateSel.value = st;
+    $$('[data-show]').forEach(function (el) {
+      el.hidden = !matches(el.getAttribute('data-show').trim().split(/\s+/), s, st);
+    });
+    var u = userFor(s, st);
+    $('#tb-title').textContent = sc.title;
+    $('#tb-crumbs').textContent = sc.crumbs;
+    $('#tb-avatar').textContent = u.ini;
+    $('#tb-name').textContent = u.name;
+    $('#tb-role').textContent = u.role;
+    $('#tb-sede').textContent = u.sede;
+    document.body.classList.toggle('bare', (sc.bare || []).indexOf(st) >= 0);
+    setNav(false);
+    document.title = 'Mockup ' + C.id + ' · ' + sc.title + ' — ' + stateLabel(s, st);
+    $('#live').textContent = 'Pantalla: ' + sc.label + '. Estado: ' + stateLabel(s, st) + '.';
+    var m = visibleModal();
+    if (m) {
+      var f = focusables(m);
+      var first = f.filter(function (el) { return /TEXTAREA|INPUT|SELECT/.test(el.tagName); })[0] || f[0];
+      if (first) { setTimeout(function () { first.focus(); }, 0); }
+    } else if (fromUser) {
+      window.scrollTo(0, 0);
+    }
+  }
+  function openNotes(open) {
+    notes.classList.toggle('open', open);
+    notesBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) { $('#notes-close').focus(); } else { notesBtn.focus(); }
+  }
+  function setChromeHeight() {
+    document.documentElement.style.setProperty('--chrome-h', chrome.offsetHeight + 'px');
+  }
+
+  /* Tabla de estados del panel de notas, generada desde la configuración */
+  var tbody = $('#notes-states');
+  if (tbody) {
+    order.forEach(function (k) {
+      C.screens[k].states.forEach(function (x) {
+        var tr = document.createElement('tr');
+        var tds = [C.screens[k].label, x[1], x[2] || ''];
+        tds.forEach(function (t) { var td = document.createElement('td'); td.textContent = t; tr.appendChild(td); });
+        var td = document.createElement('td'); var a = document.createElement('a');
+        a.href = link(k, x[0]); a.textContent = 'Ver'; td.appendChild(a); tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  window.addEventListener('hashchange', function () { render(true); });
+  screenSel.addEventListener('change', function () { location.hash = link(screenSel.value, C.screens[screenSel.value].states[0][0]); });
+  stateSel.addEventListener('change', function () { location.hash = link(screenSel.value, stateSel.value); });
+  notesBtn.addEventListener('click', function () { openNotes(!notes.classList.contains('open')); });
+  $('#notes-close').addEventListener('click', function () { openNotes(false); });
+  $('#hamburger').addEventListener('click', function () { setNav(!document.body.classList.contains('nav-open')); });
+  $('#backdrop').addEventListener('click', function () { setNav(false); });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[aria-disabled="true"]');
+    if (a) { e.preventDefault(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (notes.classList.contains('open')) { openNotes(false); return; }
+      if (document.body.classList.contains('nav-open')) { setNav(false); return; }
+      var m = visibleModal();
+      if (m && m.getAttribute('data-close')) { location.hash = m.getAttribute('data-close'); }
+      return;
+    }
+    if (e.key === 'Tab') {
+      var m2 = visibleModal();
+      if (!m2 || notes.classList.contains('open')) { return; }
+      var f = focusables(m2);
+      if (!f.length) { return; }
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!m2.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    }
+  });
+  window.addEventListener('resize', setChromeHeight);
+  setChromeHeight();
+  render(false);
+})();
+</script>
+</body>
+</html>
