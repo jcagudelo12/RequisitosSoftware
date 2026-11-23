@@ -101,3 +101,9 @@ flowchart TD
 | 8. Sin respaldo | EP09 | HU-09.2 | — | (sin spec aún) | — | 0010, 0015 |
 
 > Las HU sin spec quedan para iteraciones siguientes.
+
+---
+
+## Créditos
+
+Esta documentación fue creada con **Claude** (Claude Code), usando el modelo **Claude Opus 5.5** con esfuerzo **Extra** y con **gestión de agentes**: una sesión orquestadora repartió el trabajo entre subagentes que trabajaron en paralelo (Strategy, ADRs, Specs y Mockups) y luego revisó cada artefacto contra la definición de Strategy, ADR, Specs y Mockups.
